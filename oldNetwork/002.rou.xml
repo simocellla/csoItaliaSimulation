@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-10-16 19:16:38 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="b_0" vClass="bus" color="128,0,0"/>
+    <vType id="t_0"/>
+    <!-- Vehicles, persons and containers (sorted by depart) -->
+    <!-- CARS -->
+    <flow id="car_0" type="t_0" begin="0.00" from="E0" to="E1.1" end="3600.00" vehsPerHour="150.00"/>
+    <flow id="car_1" type="t_0" begin="0.00" from="E0" to="E3" end="3600.00" vehsPerHour="150.00"/>
+    <flow id="car_2" type="t_0" begin="0.00" from="-E3" to="E4" end="3600.00" vehsPerHour="30.00"/>
+    <flow id="car_3" type="t_0" begin="0.00" from="-E3" to="-E0" end="3600.00" vehsPerHour="30.00"/>
+    <flow id="car_4" type="t_0" begin="0.00" from="E1.1" to="E1.1" end="3600.00" vehsPerHour="150.00"/>
+    <flow id="car_7" type="t_0" begin="0.00" from="-E3" to="E1.2" end="3600.00" vehsPerHour="150.00"/>
+    <!-- BUSSES -->
+    <flow id="bus_0" type="b_0" begin="0.00" line="bus" end="3600.00" from="E0" to="E3" vehsPerHour="15.00">
+    	<stop busStop="bs_0" duration="15"/>
+   	<stop busStop="bs_2" duration="15"/>
+    </flow>
+    <flow id="bus_1" type="b_0" begin="0.00" line="bus"  end="3600.00" from="-E3" to="-E0" vehsPerHour="15.00">
+    	<stop busStop="bs_3" duration="15"/>
+   	<stop busStop="bs_5" duration="15"/>
+    </flow>
+    <!-- PERSON -->
+    <personFlow id="people_2" begin="0.00" color="blue" end="3600.00" personsPerHour="250.00">
+        <!--<personTrip from="E0" to="E6"/>-->
+        <walk from="E0" busStop="bs_0" />
+        <ride busStop="bs_2" lines="bus"/>
+        <walk to="E3"/>
+    </personFlow>
+    <personFlow id="people_3" begin="0.00" color="red" end="3600.00" personsPerHour="250.00">
+        <!--<personTrip from="-E6" to="-E0"/>-->
+        <walk from="-E3" busStop="bs_3" />
+        <ride busStop="bs_5" lines="bus"/>
+        <walk to="-E0"/>
+    </personFlow>
+</routes>
+
+
+<!-- PERSON -->
+    
