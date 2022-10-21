@@ -6,7 +6,7 @@ import traci.constants as tc
 '''
     Simple program to retrieve in the Network:
             - Number of vehicles 
-            - Vehicle infos (speed...) 
+            - Vehicle infos (speed...)
             - People information
 '''
 
