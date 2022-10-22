@@ -1,0 +1,5 @@
+FROM ubuntu:22.04
+RUN apt update && apt -y install software-properties-common && add-apt-repository -y ppa:sumo/stable && apt update && apt -y install sumo sumo-tools sumo-doc
+ADD entrypoint.sh /
+RUN chmod a+x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]

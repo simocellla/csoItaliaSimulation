@@ -1,0 +1,14 @@
+FROM registry.fedoraproject.org/fedora-minimal:34 AS base
+RUN microdnf install -y \
+  mesa-libGL \
+  openbox \
+  tigervnc-server \
+  supervisor \
+  python-websockify \
+  python-numpy \
+  novnc \
+  && microdnf clean all
+# Supervisord
+COPY supervisord.conf /etc/supervisord.conf
+# Set entrypoint
+ENTRYPOINT [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]

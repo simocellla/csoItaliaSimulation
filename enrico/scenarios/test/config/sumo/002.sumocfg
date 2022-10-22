@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-10-16 19:21:03 by Eclipse SUMO GUI Version 1.14.1
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+ <!-- <traci_server>
+    <remote-port value="8813" />
+    <num-clients value="2" />
+  </traci_server> -->
+
+   <input>
+     <net-file value="/sumo/001.net.xml"/>
+     <route-files value="/sumo/002.rou.xml"/>
+     <additional-files value="/sumo/002.xml"/>
+   </input>
+</configuration>
