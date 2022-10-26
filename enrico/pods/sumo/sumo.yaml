@@ -22,7 +22,7 @@ spec:
       ports:
         - name: novnc-port
           containerPort: 8080
-          hostPort: 9999
+          hostPort: $SUMO_NOVNC_PORT
           protocol: TCP
     - name: sumoct
       restartPolicy: Always
@@ -46,10 +46,21 @@ spec:
       volumeMounts:
         - name: sumoconfig
           mountPath: /sumo
-    - name: startsim
-      image: crltp-startsim
-      ports:
-        - name: web-port
-          containerPort: 9090
-          hostPort: 9090
-          protocol: TCP
+#    - name: startsim
+#      env:
+#        - name: SIM_PORT
+#          value: 8813
+#        - name: SIM_HOST
+#          value: localhost
+#        - name: SIM_LABEL
+#          value: main
+#        - name: DELAY
+#          value: $DELAY
+#        - name: SIM_API_PORT
+#          value: $SIM_API_PORT
+#      image: crltp-startsim
+#      ports:
+#        - name: web-port
+#          containerPort: 9090
+#          hostPort: 9090
+#          protocol: TCP
