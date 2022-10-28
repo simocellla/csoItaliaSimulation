@@ -13,7 +13,7 @@ import traci.constants as tc
 
 def __init__():
     sumoBinary = checkBinary('sumo') # sumo or sumo-gui with visual view
-    sumoConfig = "oldNetwork/002.sumocfg"
+    sumoConfig = "oldNetwork/002_new.sumocfg"
     sumoCmd = [sumoBinary, "-c", sumoConfig]
     traci.start(sumoCmd)
     print("--> Start Simulation")

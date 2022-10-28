@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-10-26 10:55:38 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="b_0" vClass="bus"/>
+    <vType id="t_0"/>
+    <!-- Vehicles, persons and containers (sorted by depart) -->
+    
+    <!--<flow id="f_0" type="b_0" begin="0.00" from="E0" to="E18" via="E3 E19 E20" end="3600.00" vehsPerHour="180.00"/>-->
+    <flow id="f_1" type="t_0" begin="0.00" from="E8" to="E19" via="E1 E3" end="3600.00" vehsPerHour="18.00"/>
+    <flow id="f_2" type="t_0" begin="0.00" from="-E3" to="-E0" end="3600.00" vehsPerHour="18.00"/>
+    <!--
+    <vehicle id="AA00AA" type="b_0" line="bus" from="E0" to="E3">
+    	<stop busStop="bs_0" duration="15"/>
+   	    <stop busStop="bs_2" duration="15"/>
+    </vehicle>
+    
+    <trip id="AA00AA" type="b_0" depart="0.00" from="E0" to="E18" via="E2 E3 E20">
+        <stop busStop="bs_0" duration="15"/>
+   	    <stop busStop="bs_1" duration="15"/>
+   	    <stop busStop="bs_2" duration="15"/>
+   	    <stop busStop="bs_3" duration="15"/>
+        <stop busStop="bs_6" duration="15"/>
+    </trip>
+    -->
+</routes>

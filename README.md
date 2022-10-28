@@ -12,6 +12,7 @@ Interfacing Python and Traci with a simulation in Sumo (Simulator of Urban Mobil
 Python3 - https://www.python.org/  <br/>
 Sumo 1.14.1 - https://sumo.dlr.de/docs/index.html <br/>
 Traci 1.14.1 - https://pypi.org/project/traci/ <br/>
+Podman 4.3 - https://podman.io/ <br/>
 
 ## Setup
 Right now the working programs are tested in the oldNetwork simulation for Sumo.

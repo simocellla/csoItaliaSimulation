@@ -1,7 +1,7 @@
 .PHONY: start
 # SUMO configurations
 SUMO_CONFIGPATH=config/sumo
-SUMO_STARTCONFIG=/sumo/002.sumocfg
+SUMO_STARTCONFIG=/sumo/002_new.sumocfg
 SUMO_WINX=1024
 SUMO_WINY=768
 # 1: autostart sumo
