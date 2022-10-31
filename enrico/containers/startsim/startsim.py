@@ -19,9 +19,90 @@ lock = threading.Lock()
 
 app = Flask(__name__)
 
+
+# Global Vars:
+global bus_list
+global bus_added 
 global var_flow
+global timetable
+global bus_flow
+
+bus_list = []
+bus_added = set()
 var_flow = 0
-global bus_id_flow
+timetable =  []
+bus_flow = set()
+
+# Functions:
+
+'''
+    Function that update the list of upcoming 
+    bus stops in the route of the chosen bus_id
+
+    :input bus_id: String, name of the Bus
+'''
+def updateBusStop(bus_id):
+    list_vehicle = traci.vehicle.getIDList()
+    bus_stops = []
+    if(any(bus_id in x for x in list_vehicle)):
+        if(traci.vehicle.getTypeID(bus_id) == "b_0"):
+            next_stops = traci.vehicle.getStops(bus_id)
+            for i in range(0,len(next_stops)):
+                bus_stops.append(next_stops[i].stoppingPlaceID)
+            if not any(bus_stop['bus'] == bus_id for bus_stop in timetable):
+                _bus_stop = {}
+                _bus_stop['bus'] = bus_id
+                _bus_stop['time'] = bus_stops
+                timetable.append(_bus_stop)
+            else:
+                for time in timetable:
+                    if(time['bus'] == bus_id):
+                        time['time'] = bus_stops
+    #if(len(bus_stops) >0 ):return bus_stops
+
+''''
+    Function called on each step of the simulation, 
+    it will update a Dictionary that contains
+    all the bus&information about them.
+'''
+def updateDict():
+    for vehicleId in traci.vehicle.getIDList():
+        if(traci.vehicle.getTypeID(vehicleId) == "b_0"):
+            speed = traci.vehicle.getSpeed(vehicleId)
+            x, y = traci.vehicle.getPosition(vehicleId)
+            lon, lat = traci.simulation.convertGeo(x, y)
+            next_stops = traci.vehicle.getStops(vehicleId)
+            stop_state = traci.vehicle.getStopState(vehicleId)
+            bus_added.add(vehicleId)
+            for bus in bus_added:
+                if not any(bus_['id'] == vehicleId  for bus_ in bus_list):
+                    # no exists
+                    bus = {}
+                    bus['id'] = vehicleId
+                    bus['speed'] = speed
+                    bus['lat'] = lat
+                    bus['lon'] = lon
+                    bus['stop_state'] = stop_state
+                    if(len(next_stops) > 0):
+                        bus['bus_status'] = next_stops[0].stopFlags
+                        bus['next_stop'] = next_stops[0].stoppingPlaceID
+                    bus_list.append(bus)
+                else:
+                    for b in bus_list:
+                        if(b["id"] == vehicleId):
+                            b["speed"] = speed
+                            b['lat'] = lat
+                            b['lon'] = lon
+                            b['stop_state'] = stop_state
+                            if(len(next_stops) > 0):
+                                b['bus_status'] = next_stops[0].stopFlags
+                                b['next_stop'] = next_stops[0].stoppingPlaceID
+            
+        if(len(bus_list) > 0 ): print(bus_list)
+
+
+# Routes: 
+
 
 '''
     Primary route, this will get the name of all the 
@@ -33,9 +114,8 @@ def test():
         l = conn.vehicle.getIDList()
         return json.dumps(l)
 
-
 '''
-    Routes POST that aims to add a SINGLE new bus
+    Route POST that aims to add a SINGLE new bus
 
     :param bus_id: Name of the bus to add in the net
     es: curl -X POST 127.0.0.1:9090/bus/J4/ --> will add a new bus J4
@@ -59,62 +139,48 @@ def add_single_bus(bus_id):
 @app.route("/busflow/<bus_id>", methods = ['POST'])
 def add_flow(bus_id):
     global var_flow
-    global bus_id_flow
-    with lock:
-        list_vehicle = traci.vehicle.getIDList()
-        if(not any(bus_id in x for x in list_vehicle)):
-            var_flow = 1
-            bus_id_flow = bus_id
-            traci.vehicle.add(bus_id, "line0", typeID="b_0")        
-            traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
-            return "Added Bus flow "+bus_id+'\n'
-
-'''
-    Routes POST that aims to see Latitude and Longitude of 
-    the specified Bus
-
-    :param bus_id: Name of the bus to analyze
-    :param gps: # TODO???
-'''       
-@app.route("/bus/<bus_id>/<gps>", methods = ['GET'])
-def get_gps(bus_id,gps):
+    #global bus_id_flow
     list_vehicle = traci.vehicle.getIDList()
-    if(any(bus_id in x for x in list_vehicle)):
-        if(traci.vehicle.getTypeID(bus_id) == "b_0"):
-            x, y = traci.vehicle.getPosition(bus_id)
-            lon, lat = traci.simulation.convertGeo(x, y)
-            return [str(lon),str(lat)]
-    else:
-        return "No bus founded with that ID"
+    if(not any(bus_id in x for x in list_vehicle)):
+        var_flow = 1
+        bus_flow.add(bus_id)
+        #bus_id_flow = bus_id
+        traci.vehicle.add(bus_id, "line0", typeID="b_0")        
+        traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
+        traci.vehicle.setBusStop(bus_id,"bs_1",duration=15)    
+        traci.vehicle.setBusStop(bus_id,"bs_2",duration=15)    
+        traci.vehicle.setBusStop(bus_id,"bs_6",duration=15)
+        return "Added Bus flow "+bus_id+'\n'
 
 
 '''
-    Routes that aims see the information of a smart display
+    GET route used to retrieve the information of a 
+    desidered bus stop and bus_id
 
-    :param palina_id: Name of the busStop to analyze
-    :param bus_id : Name of the Bus that we are waiting of
+    :input palina_id: String, name of the chosen bus stop
+    :input bus_id: String, name of the bus that we want to have info
+    e.s : 127.0.0.1:9090/palina/bs_2/AA000AA
 '''
 @app.route("/palina/<palina_id>/<bus_id>", methods=['GET'])
 def showPalina(palina_id,bus_id):
     time = 10 # TODO implement the correct value retrieval
     if (palina_id is not None and bus_id is not None):
-        try:
-            if(traci.vehicle.getTypeID(bus_id) == "b_0"):
-                next_stops = traci.vehicle.getStops(bus_id)
-                if(len(next_stops) > 0):
-                    bus_status = next_stops[0].stopFlags   
-                    bus_stop_id = next_stops[0].stoppingPlaceID
-                    if(palina_id==bus_stop_id):
-                        '''return("*******Palina ",bus_stop_id," ***********" + '\n' +
-                        "Bus : ", bus_id, "is arriving in ",time, "min" + '\n' +
-                                "*******************************************")'''
-                        string = str(bus_id)+" is now arriving in "+str(time)+" min"
-                        return(string)
-        except traci.exceptions.TraCIException:
-            return "Poblem with input"
+        if(any(bus_id in x for x in bus_added)):
+            if (len(timetable) > 0):
+                for time in timetable:
+                    if(time['bus'] == bus_id):
+                        if(palina_id in time['time']):
+                            time = (10*(time['time'].index(palina_id) +1))
+                            out = "Bus "+bus_id+" is arriving in "+str(time)+" min at "+palina_id
+                            return out
+                        else: return "Error with input"
+            else: return "Error with input"
+        else: return "Error with input"
+    else: return "Error with input"
+    
 
 '''
-    Routes that aims to see the Traffic Light information of a 
+    Route GET that aims to see the Traffic Light information of a 
     specified Junction
 
     :param junction: Name of the junction in which want to see info
@@ -130,7 +196,6 @@ def showTrafficLight(junction):
 
     except traci.exceptions.TraCIException:
         return "Problem with input"
-
 
 '''
     Routes that aims to set the Traffic Light by specifing
@@ -149,27 +214,55 @@ def setTrafficLight(junction,phase):
 
     except traci.exceptions.TraCIException:
         return "Problem with input"
+                
+
+'''
+    Routes GET that aims to see Latitude and Longitude of 
+    the specified Bus
+
+    :param bus_id: Name of the bus to analyze
+'''    
+@app.route("/bus/<bus_id>/<gps>", methods = ['GET'])
+def get_gps(bus_id,gps):
+    if(any(bus_id in x for x in bus_added)):
+        for bus in bus_list:
+            if(bus['id'] == bus_id):
+                lat = bus['lat']
+                lon = bus['lon']
+            return [str(lon),str(lat)]
+    else:
+        return "No bus founded with that ID"
 
 
-    
+
 def simulation():
     global var_flow
     global bus_id_flow
     print("Starting simulation...")
-    traci.route.add("line0", ["E0", "E18"]) # Definition of the line of the bus
+    traci.route.add("line0", ["E0","E1","E25","E24","E2","E3","E19","E20","E18"]) # Definition of the line of the bus
     step = 0
     sim = 1
+    list_vehicle = traci.vehicle.getIDList()
     while sim > 0:
-        with lock:
-            sim = traci.simulation.getMinExpectedNumber() > 0
-            conn.simulationStep()
-            step += 1
+        updateDict()
+        sim = traci.simulation.getMinExpectedNumber() > 0
+        conn.simulationStep()
+        step += 1    
         if(var_flow != 0): # Se è stato usata la funzione flow prima
-            add_flow(bus_id_flow)
+            list_vehicle = traci.vehicle.getIDList()
+            for bus_id_flow in bus_flow:
+                if(not bus_id_flow in list_vehicle):
+                    add_flow(bus_id_flow)
+                    updateBusStop(bus_id_flow)
+            if(len(bus_flow) > 0):
+                for b in bus_flow:
+                    updateBusStop(b) 
         if (delay - 50) > 0:
             time.sleep((delay - 50)/1000)
         #time.sleep(0.1)
     conn.close()
+
+
 
 if __name__ == '__main__':
     print("Setted delay: ",delay)
