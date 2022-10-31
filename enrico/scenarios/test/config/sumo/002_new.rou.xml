@@ -35,7 +35,7 @@
     </route>
     <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="250.00">
         <!--<personTrip from="E0" to="E6"/>-->
-        <walk from="E0" busStop="bs_0" />
+        <walk from="E2" busStop="bs_1" />
         <ride busStop="bs_6" lines="bus"/>
         <walk to="E18"/>
     </personFlow>
