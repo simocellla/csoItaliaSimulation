@@ -28,7 +28,9 @@ global timetable
 global bus_flow
 global junctions
 global junctions_list
+global fermate_tot
 
+fermate_tot = []
 bus_list = []
 bus_added = set()
 var_flow = 0
@@ -180,13 +182,31 @@ def showPalina(palina_id,bus_id):
                     if(time['bus'] == bus_id):
                         if(palina_id in time['time']):
                             time = (10*(time['time'].index(palina_id) +1))
-                            out = "Bus "+bus_id+" is arriving in "+str(time)+" min at "+palina_id
-                            return out
+                            out = "Bus "+bus_id+" is arriving in "+str(time)+" min at "+palina_id+" "
+                            people = next(v['people_waiting'] for v in fermate_tot if v['id'] == palina_id)
+                            return out+" ,"+str(people)+" people are waiting on it"
                         else: return "Error with input"
             else: return "Error with input"
         else: return "Error with input"
     else: return "Error with input"
-    
+
+
+'''
+    Function that every step of the simulation update the waiting
+    people at every stop of the bus
+'''
+def updateWaitingPeople(fermate  = ["bs_0","bs_1","bs_2","bs_6"]):
+    for f in fermate:
+        if not any(_f['id'] == f for _f in fermate_tot):
+                fermata = {}
+                fermata['id'] = f
+                fermata['people_waiting'] =  traci.simulation.getBusStopWaiting(f)
+                fermate_tot.append(fermata)
+        else:
+            for ferm in fermate_tot:
+                if(ferm['id'] == f):
+                    ferm['people_waiting'] = traci.simulation.getBusStopWaiting(f)
+    #if(len(fermate_tot) != 0): print(fermate_tot)
 
 '''
     Route GET that aims to see the Traffic Light information of a 
@@ -270,6 +290,7 @@ def simulation():
     while sim > 0:
         updateDict()
         updateJunction()
+        updateWaitingPeople()
         sim = traci.simulation.getMinExpectedNumber() > 0
         conn.simulationStep()
         step += 1    
