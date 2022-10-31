@@ -26,12 +26,16 @@ global bus_added
 global var_flow
 global timetable
 global bus_flow
+global junctions
+global junctions_list
 
 bus_list = []
 bus_added = set()
 var_flow = 0
 timetable =  []
 bus_flow = set()
+junctions = set()
+junctions_list = []
 
 # Functions:
 
@@ -187,13 +191,12 @@ def showPalina(palina_id,bus_id):
 '''
 @app.route("/gettrafficlight/<junction>/", methods=['GET'])
 def showTrafficLight(junction):
-    #junction = "J4"
     try:
         if(junction is not None):
-            phase = traci.trafficlight.getPhase(junction)
-            gyr = traci.trafficlight.getRedYellowGreenState(junction)
-            return ("Phase of "+junction+": "+str(phase)+" GreenYellowRed: "+str(gyr))
-
+            if junction in junctions:
+                for jun in junctions_list:
+                    if(jun['id'] == junction):
+                        return ("Phase of "+junction+": "+str(jun['phase'])+" GreenYellowRed: "+str(jun['gyr']))
     except traci.exceptions.TraCIException:
         return "Problem with input"
 
@@ -233,18 +236,35 @@ def get_gps(bus_id,gps):
     else:
         return "No bus founded with that ID"
 
-
+def updateJunction():
+    if(len(junctions) > 0):
+        for j in junctions:
+            if not any(junction['id'] == j for junction in junctions_list):
+                print("entrato")
+                junction = {}
+                junction['id'] = j
+                junction['phase'] =  traci.trafficlight.getPhase(j)
+                junction['gyr'] = traci.trafficlight.getRedYellowGreenState(j)
+                junctions_list.append(junction)
+            else:
+                for jun in junctions_list:
+                    if(jun['id'] == j):
+                        jun['phase'] = traci.trafficlight.getPhase(j)
+                        jun['gyr'] = traci.trafficlight.getRedYellowGreenState(j)
+    #print(junctions_list)
 
 def simulation():
     global var_flow
     global bus_id_flow
     print("Starting simulation...")
     traci.route.add("line0", ["E0","E1","E25","E24","E2","E3","E19","E20","E18"]) # Definition of the line of the bus
+    junctions.add("J4")
     step = 0
     sim = 1
     list_vehicle = traci.vehicle.getIDList()
     while sim > 0:
         updateDict()
+        updateJunction()
         sim = traci.simulation.getMinExpectedNumber() > 0
         conn.simulationStep()
         step += 1    
