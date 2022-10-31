@@ -26,4 +26,17 @@
         <stop busStop="bs_6" duration="15"/>
     </trip>
     -->
+
+    <route id="busRoute" edges="E0 E1 E25 E24 E2 E3 E19 E20 E18">
+                <stop busStop="bs_0" duration="15"/>
+                <stop busStop="bs_1" duration="15"/>
+                <stop busStop="bs_2" duration="15"/>
+                <stop busStop="bs_6" duration="15"/>
+    </route>
+    <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="250.00">
+        <!--<personTrip from="E0" to="E6"/>-->
+        <walk from="E0" busStop="bs_0" />
+        <ride busStop="bs_6" lines="bus"/>
+        <walk to="E18"/>
+    </personFlow>
 </routes>

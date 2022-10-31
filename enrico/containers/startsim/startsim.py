@@ -77,6 +77,7 @@ def updateDict():
             lon, lat = traci.simulation.convertGeo(x, y)
             next_stops = traci.vehicle.getStops(vehicleId)
             stop_state = traci.vehicle.getStopState(vehicleId)
+            people_in = traci.vehicle.getPersonNumber(vehicleId)
             bus_added.add(vehicleId)
             for bus in bus_added:
                 if not any(bus_['id'] == vehicleId  for bus_ in bus_list):
@@ -87,6 +88,7 @@ def updateDict():
                     bus['lat'] = lat
                     bus['lon'] = lon
                     bus['stop_state'] = stop_state
+                    bus['people_in'] = people_in
                     if(len(next_stops) > 0):
                         bus['bus_status'] = next_stops[0].stopFlags
                         bus['next_stop'] = next_stops[0].stoppingPlaceID
@@ -98,6 +100,7 @@ def updateDict():
                             b['lat'] = lat
                             b['lon'] = lon
                             b['stop_state'] = stop_state
+                            b['people_in'] = people_in
                             if(len(next_stops) > 0):
                                 b['bus_status'] = next_stops[0].stopFlags
                                 b['next_stop'] = next_stops[0].stoppingPlaceID
@@ -149,11 +152,13 @@ def add_flow(bus_id):
         var_flow = 1
         bus_flow.add(bus_id)
         #bus_id_flow = bus_id
-        traci.vehicle.add(bus_id, "line0", typeID="b_0")        
+        traci.vehicle.add(bus_id, "busRoute", typeID="b_0")   
+        '''     
         traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
         traci.vehicle.setBusStop(bus_id,"bs_1",duration=15)    
         traci.vehicle.setBusStop(bus_id,"bs_2",duration=15)    
         traci.vehicle.setBusStop(bus_id,"bs_6",duration=15)
+        '''
         return "Added Bus flow "+bus_id+'\n'
 
 
