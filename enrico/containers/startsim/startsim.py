@@ -1,3 +1,7 @@
+'''
+    NEED TO USE FOR csoItalia.sumocfg config 
+    scenario : csoItalia
+'''
 from crypt import methods
 import traci
 import os

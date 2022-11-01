@@ -1,3 +1,7 @@
+'''
+    NEED TO USE FOR 002_new.sumocfg config 
+    scenario : test
+'''
 from crypt import methods
 import traci
 import os
