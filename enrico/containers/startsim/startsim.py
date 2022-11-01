@@ -51,7 +51,7 @@ def updateBusStop(bus_id):
     list_vehicle = traci.vehicle.getIDList()
     bus_stops = []
     if(any(bus_id in x for x in list_vehicle)):
-        if(traci.vehicle.getTypeID(bus_id) == "b_0"):
+        if(traci.vehicle.getTypeID(bus_id) == "DEFAULT_VEHTYPE"):
             next_stops = traci.vehicle.getStops(bus_id)
             for i in range(0,len(next_stops)):
                 bus_stops.append(next_stops[i].stoppingPlaceID)
@@ -73,7 +73,7 @@ def updateBusStop(bus_id):
 '''
 def updateDict():
     for vehicleId in traci.vehicle.getIDList():
-        if(traci.vehicle.getTypeID(vehicleId) == "b_0"):
+        if(traci.vehicle.getTypeID(vehicleId) == "DEFAULT_VEHTYPE"):
             speed = traci.vehicle.getSpeed(vehicleId)
             x, y = traci.vehicle.getPosition(vehicleId)
             lon, lat = traci.simulation.convertGeo(x, y)
@@ -132,7 +132,7 @@ def test():
 @app.route("/bus/<bus_id>", methods = ['POST'])
 def add_single_bus(bus_id):
     if bus_id != None:    
-        traci.vehicle.add(bus_id, "line0", typeID="b_0")
+        traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")
         traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
         return json.dumps(request.form)
     else:
@@ -154,7 +154,7 @@ def add_flow(bus_id):
         var_flow = 1
         bus_flow.add(bus_id)
         #bus_id_flow = bus_id
-        traci.vehicle.add(bus_id, "busRoute", typeID="b_0")   
+        traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")   
         '''     
         traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
         traci.vehicle.setBusStop(bus_id,"bs_1",duration=15)    
@@ -195,7 +195,7 @@ def showPalina(palina_id,bus_id):
     Function that every step of the simulation update the waiting
     people at every stop of the bus
 '''
-def updateWaitingPeople(fermate  = ["bs_0","bs_1","bs_2","bs_6"]):
+def updateWaitingPeople(fermate  = ["Italia1","Italia2","Italia3"]):
     for f in fermate:
         if not any(_f['id'] == f for _f in fermate_tot):
                 fermata = {}
@@ -282,14 +282,14 @@ def simulation():
     global var_flow
     global bus_id_flow
     print("Starting simulation...")
-    traci.route.add("line0", ["E0","E1","E25","E24","E2","E3","E19","E20","E18"]) # Definition of the line of the bus
+    #traci.route.add("line0", ["E0","E1","E25","E24","E2","E3","E19","E20","E18"]) # Definition of the line of the bus
     junctions.add("J4")
     step = 0
     sim = 1
     list_vehicle = traci.vehicle.getIDList()
     while sim > 0:
         updateDict()
-        updateJunction()
+        #updateJunction()
         updateWaitingPeople()
         sim = traci.simulation.getMinExpectedNumber() > 0
         conn.simulationStep()
