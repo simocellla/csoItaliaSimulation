@@ -263,7 +263,7 @@ def get_gps(bus_id,gps):
             if(bus['id'] == bus_id):
                 lat = bus['lat']
                 lon = bus['lon']
-            return [str(lon),str(lat)]
+            return [str(lat),str(lon)]
     else:
         return "No bus founded with that ID"
 

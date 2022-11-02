@@ -116,7 +116,6 @@ def updateDict():
 
 # Routes: 
 
-
 '''
     Primary route, this will get the name of all the 
     vehicles in the Simulation
@@ -126,6 +125,7 @@ def test():
     with lock:
         l = conn.vehicle.getIDList()
         return json.dumps(l)
+
 
 '''
     Route POST that aims to add a SINGLE new bus
@@ -157,14 +157,7 @@ def add_flow(bus_id):
     if(not any(bus_id in x for x in list_vehicle)):
         var_flow = 1
         bus_flow.add(bus_id)
-        #bus_id_flow = bus_id
         traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")   
-        '''     
-        traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
-        traci.vehicle.setBusStop(bus_id,"bs_1",duration=15)    
-        traci.vehicle.setBusStop(bus_id,"bs_2",duration=15)    
-        traci.vehicle.setBusStop(bus_id,"bs_6",duration=15)
-        '''
         return "Added Bus flow "+bus_id+'\n'
 
 
@@ -212,6 +205,7 @@ def updateWaitingPeople(fermate  = ["Italia1","Italia2","Italia3"]):
                     ferm['people_waiting'] = traci.simulation.getBusStopWaiting(f)
     #if(len(fermate_tot) != 0): print(fermate_tot)
 
+
 '''
     Route GET that aims to see the Traffic Light information of a 
     specified Junction
@@ -228,6 +222,7 @@ def showTrafficLight(junction):
                         return ("Phase of "+junction+": "+str(jun['phase'])+" GreenYellowRed: "+str(jun['gyr']))
     except traci.exceptions.TraCIException:
         return "Problem with input"
+
 
 '''
     Routes that aims to set the Traffic Light by specifing
@@ -261,10 +256,14 @@ def get_gps(bus_id,gps):
             if(bus['id'] == bus_id):
                 lat = bus['lat']
                 lon = bus['lon']
-            return [str(lon),str(lat)]
+            return [str(lat),str(lon)]
     else:
         return "No bus founded with that ID"
 
+'''
+    Function used to update every step of simulation
+    the information of alla the junctions in the net
+'''
 def updateJunction():
     if(len(junctions) > 0):
         for j in junctions:
@@ -282,6 +281,11 @@ def updateJunction():
                         jun['gyr'] = traci.trafficlight.getRedYellowGreenState(j)
     #print(junctions_list)
 
+
+
+'''
+    Main program:
+'''
 def simulation():
     global var_flow
     global bus_id_flow
