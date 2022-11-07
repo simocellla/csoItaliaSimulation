@@ -192,7 +192,7 @@ def showPalina(palina_id,bus_id):
     Function that every step of the simulation update the waiting
     people at every stop of the bus
 '''
-def updateWaitingPeople(fermate  = ["Italia1","Italia2","Italia3"]):
+def updateWaitingPeople(fermate  = ["Marconi1-Fiera","Marconi2-Rimessa","Italia1-PuntaVagno","Italia2-Piave","Italia3-Zara"]):
     for f in fermate:
         if not any(_f['id'] == f for _f in fermate_tot):
                 fermata = {}

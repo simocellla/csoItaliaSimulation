@@ -4,12 +4,18 @@
 -->
 
 <additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
-    <!-- StoppingPlaces -->
+    <!-- StoppingPlaces 
     <busStop id="bs_0" lane="58774924#10_1" startPos="70.84" endPos="80.84"/>
     <busStop id="Italia2" lane="751968798#9_0" startPos="22.05" endPos="32.05"/>
     <busStop id="Italia1" lane="751968798#3_1" startPos="112.52" endPos="122.52"/>
     <busStop id="bs_3" lane="58774924#2_1" startPos="127.36" endPos="137.36"/>
     <busStop id="Italia3" lane="751968798#11_0" startPos="18.72" endPos="28.72"/>
     <busStop id="bs_5" lane="58774924#9_1" startPos="37.29" endPos="47.29"/>
+    -->
+    <busStop id="Italia1-PuntaVagno" lane="751968798#3_1" startPos="136.56" endPos="146.56"/>
+    <busStop id="Italia2-Piave" lane="751968798#9_0" startPos="26.20" endPos="36.20"/>
+    <busStop id="Italia3-Zara" lane="751968798#12_1" startPos="49.15" endPos="59.15"/>
+    <busStop id="Marconi1-Fiera" lane="5793098#1_1" startPos="35.09" endPos="45.09"/>
+    <busStop id="Marconi2-Rimessa" lane="566784919#0_0" startPos="37.26" endPos="47.26"/>
 </additional>
 
