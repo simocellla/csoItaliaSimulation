@@ -15,7 +15,7 @@ Make a ```POST``` request in this form :
 
 As ```normal user```, execute ```bus.py```
 
-
+## Output View:
 You can access the ```sumo-gui``` with a web browser opening the url [http://127.0.0.1:9999](http://127.0.0.1:9999) and a test REST api opening the url [http://127.0.0.1:9090](http://127.0.0.1:9090)
 
 To stop the simulation, execute ```make stop``` in the ```scenarios/test/``` directory.
