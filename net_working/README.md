@@ -25,4 +25,4 @@ As ```normal user```, execute ```bus.py```
 You can access the ```sumo-gui``` with a web browser opening the url [http://127.0.0.1:9999](http://127.0.0.1:9999) and a test REST api opening the url [http://127.0.0.1:9090](http://127.0.0.1:9090) <br />
 
 Also you can perform some GET requests, to new added ```yellow_network``` by typing on the browser : [http://127.0.0.1:9393/bus/AAAA](http://127.0.0.1:9393/bus/AAAA)
-To stop the simulation, execute ```make stop``` in the ```scenarios/test/``` directory.
+To stop the simulation, execute ```make stop``` in the ```scenarios/test/``` directory. <br />
