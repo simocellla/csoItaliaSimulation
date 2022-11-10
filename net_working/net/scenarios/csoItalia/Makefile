@@ -1,0 +1,27 @@
+.PHONY: start
+# SUMO configurations
+SUMO_CONFIGPATH=config/sumo
+SUMO_STARTCONFIG=/sumo/csoItalia.sumocfg
+SUMO_WINX=1024
+SUMO_WINY=768
+# 1: autostart sumo
+SUMO_START=1
+SUMO_DELAY=200
+# SUMO remote TRACI port
+SUMO_REMOTEPORT=8813
+SUMO_NOVNC_PORT=9999
+# REST API PORT for querying SUMO from CR
+SIM_API_PORT=9090
+
+start:
+	CONFIGPATH=$(shell pwd)/$(SUMO_CONFIGPATH) CONFIG=$(SUMO_STARTCONFIG) \
+	 DISPLAY_X=$(SUMO_WINX) DISPLAY_Y=$(SUMO_WINY) \
+	 START=$(SUMO_START) DELAY=$(SUMO_DELAY) \
+	 WSIZE="$(SUMO_WINX),$(SUMO_WINY)" \
+	 RPORT=$(SUMO_REMOTEPORT) \
+	 SUMO_NOVNC_PORT=$(SUMO_NOVNC_PORT) \
+	 SIM_API_PORT=$(SIM_API_PORT) \
+	 $(MAKE) -C ../../pods/sumo/ sumo
+
+stop:
+	$(MAKE) -C ../../pods/sumo/ sumo-stop
