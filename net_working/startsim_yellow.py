@@ -13,27 +13,6 @@ global bus_added
 bus_list = []
 bus_added = set()
 
-'''# 'POST' action of the bus:
-@app.route("/updatebus/<bus_id>/<lat>/<lon>/<speed>", methods = ['POST'])
-def update_bus(bus_id,lat,lon,speed):
-    bus_added.add(bus_id)
-    for bus in bus_added:
-        if not any(bus_['id'] == bus_id  for bus_ in bus_list):
-            bus = {}
-            bus['id'] = bus_id
-            bus['lat'] = lat
-            bus['lon'] = lon
-            bus['speed'] = speed
-            bus_list.append(bus)
-            return bus
-        else:
-            for b in bus_list:
-                if(b['id'] == bus_id):
-                    b['lat'] = lat
-                    b['lon'] = lon
-                    b['speed'] = speed
-                    return "gia dentro\n"'''
-
 # Utile mettere <bus_id> come parameter? i don't think so ...
 # 'POST' action of the bus:
 @app.route("/updatebus/<bus_id>", methods = ['POST'])
@@ -60,7 +39,6 @@ def update_bus(bus_id):
                     b['speed'] = speed
                     return "gia dentro\n"
 
-
 # 'GET' information of the bus:
 @app.route("/bus/<bus_id>", methods = ['GET'])
 def get_gps(bus_id):
@@ -77,6 +55,20 @@ def get_gps(bus_id):
         return "No bus founded with that ID"
 
 
+# 'GET' information of the Palina:
+@app.route("/printpalina/<palina_id>", methods = ['GET'])
+def printPalina(palina_id):
+    url = "http://127.0.0.1:9090/timepalina/"+palina_id
+    response = requests.get(url)
+    if (response.status_code != 204 and response.status_code != 500 and
+        response.headers["content-type"].strip().startswith("application/json")
+        ):
+        try:
+            return response.json()
+        except  ValueError:
+            return 0
+    else:
+        return 0
 
 if __name__ == '__main__':
     app.run(port=webport, host='0.0.0.0', debug=True, use_reloader=False)

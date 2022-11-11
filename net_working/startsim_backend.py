@@ -112,9 +112,18 @@ def updateDict():
                                 b['bus_status'] = next_stops[0].stopFlags
                                 b['next_stop'] = next_stops[0].stoppingPlaceID
             
-        #if(len(bus_list) > 0 ): print(bus_list)
+        # if(len(bus_list) > 0 ): print(bus_list)
 
-
+def getNextBusStops(vehicleId):
+    fermate  = ["Marconi1-Fiera","Marconi2-Rimessa","Italia1-PuntaVagno","Italia2-Piave","Italia3-Zara"]
+    if(vehicleId in bus_added):
+        for b in bus_list:
+            if(b['id'] == vehicleId):
+                next_stop = b['next_stop']
+                if(next_stop in fermate):
+                    index = fermate.index(next_stop)
+                    fermate_remains = fermate[index:]
+                    return fermate_remains
 # Routes: 
 
 '''
@@ -189,6 +198,23 @@ def showPalina(palina_id,bus_id):
     else: return "Error with input"
 
 
+@app.route("/timepalina/<palina_id>", methods=['GET'])
+def showPalina_noBus(palina_id):
+    output = []
+    fermate  = ["Marconi1-Fiera","Marconi2-Rimessa","Italia1-PuntaVagno","Italia2-Piave","Italia3-Zara"]
+    if(palina_id in fermate):
+        for b in bus_added:
+            list = getNextBusStops(b) 
+            if(len(list) > 0):
+                if(palina_id in list):
+                    time = (10*(list.index(palina_id) +1))
+                    out = "Bus "+b+" is arriving in "+str(time)
+                    output.append(out)
+                else:
+                    return "No bus"
+        return output
+    else:
+        return "Problem occured, check input"
 '''
     Function that every step of the simulation update the waiting
     people at every stop of the bus
@@ -259,7 +285,8 @@ def get_gps(bus_id,gps):
                 lon = bus['lon']
                 speed = bus['speed']
                 speed *= 3.6
-            return [str(lat),str(lon),str(speed)]
+                
+                return [str(lat),str(lon),str(speed)]
     else:
         return "No bus founded with that ID"
 

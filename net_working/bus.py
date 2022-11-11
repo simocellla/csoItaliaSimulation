@@ -8,7 +8,8 @@ webport = os.getenv('AMT_API_PORT', default = 9191)
 app = Flask(__name__)
 bus_name = 'AAAA'
 
-# Python scemo che legge e scrive, legge dalla simulazione di noVNC, e scrive sulla nuova rete amt 
+# Python scemo che legge e scrive, legge dalla simulazione di noVNC, 
+# e scrive sulla rete amt 'yellow'
 
 def readUpdate(bus_id=bus_name):
     # Prendere i dati da backend
