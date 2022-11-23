@@ -28,7 +28,7 @@
         <stop busStop="Italia3-Zara" duration="20"/>
     </route>
 
-    <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="200.00">
+    <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="120.00">
         <walk from="5793098#1" busStop="Marconi1-Fiera" />
         <ride to="751968798#12" lines="AAAA"/>
         <walk to="751968798#12"/>

@@ -70,5 +70,25 @@ def printPalina(palina_id):
     else:
         return 0
 
+@app.route("/palina/<palina_id>", methods = ['GET'])
+def getPalina(palina_id):
+    url = "http://127.0.0.1:9090/paline"
+    response = requests.get(url)
+    out = []
+    if (response.status_code != 204 and response.status_code != 500 and
+        response.headers["content-type"].strip().startswith("application/json")
+        ):
+        try:
+            paline_list = response.json()
+            for p in paline_list:
+                if(palina_id in p):
+                    s = "Bus "+p['bus']+" arriving in "+p[palina_id]
+                    out.append(s)
+            return out
+        except  ValueError:
+            return 0
+    else:
+        return 0
+
 if __name__ == '__main__':
     app.run(port=webport, host='0.0.0.0', debug=True, use_reloader=False)
