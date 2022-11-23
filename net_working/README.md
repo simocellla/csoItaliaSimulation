@@ -21,6 +21,10 @@ this will add a bus 'AAAA' in the net (will be useful for interacting with the n
 
 As ```normal user```, execute ```bus.py```
 
+As ```normal user```, execute ```palina.py```
+
+```n.b:``` both, ```bus.py``` and  ```palina.py``` are built for specific entity in the network, if you have a look to this files you can actually change the name of them an so retrieve the right outputs.
+
 ## Output View:
 You can access the ```sumo-gui``` with a web browser opening the url [http://127.0.0.1:9999](http://127.0.0.1:9999) and a test REST api opening the url [http://127.0.0.1:9090](http://127.0.0.1:9090) <br />
 
