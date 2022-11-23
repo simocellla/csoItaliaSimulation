@@ -9,7 +9,7 @@
 
 As ```root```, execute ```make``` in the ```containers``` directory to build the images.
 
-As ```root```, execute ```make``` in the ```scenarios/test/``` directory to run the test scenario.
+As ```root```, execute ```make``` in the ```scenarios/csoItalia/``` directory to run the test scenario.
 
 As ```normal user```, execute ```startsim_backend.py``` *this will be the BACKEND network of AMT*
 
