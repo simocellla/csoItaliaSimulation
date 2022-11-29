@@ -42,4 +42,4 @@ Also you can perform some GET requests, to new added ```yellow_network``` by typ
 
 ---
 
-To stop the simulation, execute ```make stop``` in the ```scenarios/test/``` directory. <br />
+To **stop** the simulation, execute ```make stop``` in the ```scenarios/test/``` directory. <br />
