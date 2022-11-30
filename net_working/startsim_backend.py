@@ -1,16 +1,6 @@
-'''
-    NEED TO USE FOR csoItalia.sumocfg config 
-    scenario : csoItalia
-'''
 from crypt import methods
-import traci
-import os
-import threading
-import time
-import json
-import requests
+import traci, os, threading, time, json, requests, math
 from flask import Flask, request
-import math
 
 simport = os.getenv('SIM_PORT', default = 8813)
 simhost = os.getenv('SIM_HOST', default = 'localhost')

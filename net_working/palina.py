@@ -1,16 +1,10 @@
-import requests
-import sys
-import time
+import requests, sys, time
 
-global url_get
-global palina_id
-global url_time
-global fermate
 
 url_get = "http://127.0.0.1:9393/palina/"
 url_time = "http://127.0.0.1:9393/getime"
 fermate  = ["Marconi1-Fiera","Marconi2-Rimessa","Italia1-PuntaVagno","Italia2-Piave","Italia3-Zara"]
-
+global palina_id
 
 '''
     Init function, used to set all the info
@@ -18,19 +12,17 @@ fermate  = ["Marconi1-Fiera","Marconi2-Rimessa","Italia1-PuntaVagno","Italia2-Pi
 '''
 def __init__():
     global palina_id
-    global fermate
-    name_list = sys.argv
-    if(len(name_list) > 1):
-        palina = name_list[-1]
-        if(palina in fermate):
-            palina_id = palina
-            print("Palina "+palina_id+" setted")
-            print("---------------------------")
-        else:
-            print("Please, Provide a correct name!")
-            sys.exit(0)
+    try:
+        palina = str(sys.argv[1])
+    except IndexError:
+        print('[+] Usage: python '+ sys.argv[0] + ' <Smart Display ID>')
+        sys.exit(0)
+    if(palina in fermate):
+        palina_id = palina
+        print("Palina "+palina_id+" setted")
+        print("---------------------------")
     else:
-        print("Please, provide (as parameter) the name of the smart-display")
+        print("[+] Please, provide a correct name!")
         sys.exit(0)
     
 

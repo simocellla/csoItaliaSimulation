@@ -1,7 +1,6 @@
 from crypt import methods
-import os
+import os, requests
 from flask import Flask, request
-import requests
 
 webport = os.getenv('AMT_API_PORT', default = 9393)
 app = Flask(__name__)
@@ -80,9 +79,12 @@ def getPalina(palina_id):
 '''
 @app.route("/getime", methods = ['GET'])
 def getime():
-    x = requests.get(url_time)
-    if(x.status_code == 200): 
-        return x.text
+    try:
+        x = requests.get(url_time)
+        if(x.status_code == 200): 
+            return x.text
+    except:
+        print("error")
 
 
 if __name__ == '__main__':

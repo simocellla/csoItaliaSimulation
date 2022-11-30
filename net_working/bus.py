@@ -1,22 +1,20 @@
-import requests
-import time
-import sys
+import requests, time, sys
 
 '''
     init function, used to set all the info
     of the chosen bus.
 '''    
+
 def __init__():
     global bus_name
-    name_list = sys.argv
-    if(len(name_list) > 1):
-        bus_name = name_list[-1]
-        bus_name = bus_name
-        print("Bus "+bus_name+" setted")
-        print("----------------------")
-    else:
-        print("Please, specify a bus name (as parameter) of the program")
+    try:
+        bus_name = str(sys.argv[1])
+    except IndexError:
+        print('[+] Usage: python '+ sys.argv[0] + ' <Bus ID>')
         sys.exit(0)
+    bus_name = bus_name
+    print("Bus "+bus_name+" setted")
+    print("----------------------")
 
 
 '''
