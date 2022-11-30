@@ -7,10 +7,7 @@ app = Flask(__name__)
 
 amt_port = 9191
 
-global bus_list
-global bus_added
-global url_time
-global url_paline
+# Global vars:
 
 bus_list = []
 bus_added = set()

@@ -17,21 +17,6 @@ app = Flask(__name__)
 
 
 # Global Vars:
-global bus_list
-global bus_added 
-global var_flow
-global timetable
-global bus_flow
-global junctions
-global junctions_list
-global fermate_tot
-global step
-global speed_list
-global index
-global time_analysis
-global paline
-global fermate
-global total_distances
 
 fermate_tot = []
 bus_list = []

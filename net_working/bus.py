@@ -51,6 +51,6 @@ if __name__ == '__main__':
         try:
             readUpdate()
         except:
-            print("Problem with server, try again")
+            print("[+] Error, may check Bus ID")
             sys.exit(1)
         time.sleep(5) # Every n_sec update the information of the bus
