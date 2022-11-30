@@ -7,7 +7,7 @@
 
 ## Scenario design of networks
 
-<img src="https://github.com/simocellla/csoItaliaSimulation/blob/main/net_working/fig/scenario_view%20.png" width="400" height="410">
+<img src="https://github.com/simocellla/csoItaliaSimulation/blob/main/net_working/fig/scenario_view%20.png" width="720" height="680">
 
 ## Run the enviroment
 
