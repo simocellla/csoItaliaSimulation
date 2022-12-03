@@ -39,6 +39,12 @@ example of execution : ```python3 palina.py Italia3-Zara```
 
 ```n.b:``` both, ```bus.py``` and  ```palina.py``` are built for specific entity in the network, this means that you have to specify both the name of the bus and the name of the palina as parameter of desidered program in python.
 
+## Injecting wrong speed to disturb the Palina output:
+In order to disturb the AMT network, and to be able to inject bad/false speeds, a python file was created : ```injection_speed.py``` <br />
+The execution of this program is very simple: <br />
+```python3 injection_speed.py  <BusID> <DesideredSpeeed>``` <br />
+And then this python program will perform 10000 POST action to the AMT net, in order to make it believe that the information is coming from the bus, and therefore that it is the right information to use all over the network.
+
 ## Output View
 You can access the ```sumo-gui``` with a web browser opening the url [http://127.0.0.1:9999](http://127.0.0.1:9999) and a test REST api opening the url [http://127.0.0.1:9090](http://127.0.0.1:9090) <br />
 
