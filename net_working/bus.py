@@ -45,7 +45,7 @@ def readUpdate():
             if(y.status_code == 200):
                 data = y.json()
                 speed = y.text
-                print("Speed to add:",speed)
+                print("Speed:")
                 speed = data
             todo = {"lat":lat,"lon":lon,"speed":speed}
             response = requests.post(url_post,data=todo)
