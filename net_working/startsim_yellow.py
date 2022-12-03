@@ -44,6 +44,39 @@ def update_bus(bus_id):
                     return b
                     
 
+'''
+    Route used to retrieve the information of a bus such as:
+    - latitude, longitude and speed
+
+    :param bus_id: Name of the bus to add in the net
+'''
+@app.route("/bus/<bus_id>/<gps>", methods = ['GET'])
+def get_gps(bus_id,gps):
+    if(any(bus_id in x for x in bus_added)):
+        for bus in bus_list:
+            if(bus['id'] == bus_id):
+                lat = bus['lat']
+                lon = bus['lon']
+                speed = bus['speed']
+                # speed = bus['speed']
+                # speed *= 3.6
+                return [str(lat),str(lon),speed]
+    else:
+        return "No bus founded with that ID"
+
+
+'''
+    Route used to clean the bus list after some specific
+    action's flow. (see injection for more detail)
+
+    :param bus_id: name of the bus
+'''
+@app.route("/busclean/<bus_id>", methods = ['POST'])
+def cleanBus(bus_id):
+    bus_id = request.form['bus']
+    if(any(bus_id in x for x in bus_added)):
+        bus_added.remove(bus_id)
+
 # PALINE FUNCTIONS:
 
 '''
@@ -61,7 +94,7 @@ def getPalina(palina_id):
             paline_list = response.json()
             for p in paline_list:
                 if(palina_id in p):
-                    s = "Bus "+p['bus']+" arriving in "+p[palina_id]
+                    s = "Bus " + p['bus'] + " arriving in " + p[palina_id]
                     out.append(s)
             return out
         except  ValueError:
@@ -83,6 +116,8 @@ def getime():
     except:
         print("error")
 
-
+'''
+    Main program
+'''
 if __name__ == '__main__':
     app.run(port=webport, host='0.0.0.0', debug=True, use_reloader=False)

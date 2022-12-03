@@ -1,12 +1,17 @@
-from crypt import methods
-import traci, os, threading, time, json, requests, math
+import traci
+import os 
+import threading
+import time 
+import json 
+import math
+import requests
 from flask import Flask, request
 
-simport = os.getenv('SIM_PORT', default = 8813)
-simhost = os.getenv('SIM_HOST', default = 'localhost')
-simlabel = os.getenv('SIM_LABEL', default = 'main')
-webport = os.getenv('SIM_API_PORT', default = 9090)
-delay = os.getenv('DELAY', default = 100)
+simport = os.getenv('SIM_PORT', default=8813)
+simhost = os.getenv('SIM_HOST', default='localhost')
+simlabel = os.getenv('SIM_LABEL', default='main')
+webport = os.getenv('SIM_API_PORT', default=9090)
+delay = os.getenv('DELAY', default=100)
 
 traci.init(port=simport, host=simhost, label=simlabel)
 conn = traci.getConnection(simlabel)
@@ -22,7 +27,7 @@ fermate_tot = []
 bus_list = []
 bus_added = set()
 var_flow = 0
-timetable =  []
+timetable = []
 bus_flow = set()
 junctions = set()
 junctions_list = []
@@ -31,23 +36,21 @@ speed_list = []
 index = []
 time_analysis = 0
 paline = []
-fermate  = ["Marconi1-Fiera","Marconi2-Rimessa",
-            "Italia1-PuntaVagno","Italia2-Piave","Italia3-Zara"]
-total_distances = [206.34,
-                    275.32,
-                    348.89,
-                    289.13,
-                    301.13,
-                    2457.82]
+fermate = ["Marconi1-Fiera", "Marconi2-Rimessa", "Italia1-PuntaVagno", 
+            "Italia2-Piave", "Italia3-Zara"]
+total_distances = [206.34, 275.32, 348.89, 289.13, 301.13, 2457.82]
 
 
 # LOCAL FUNCTION (updates...) :
+
 
 ''''
     Function called on each step of the simulation, 
     it will update a Dictionary that contains
     all the bus&information about them.
 '''
+
+
 def updateDict():
     for vehicleId in traci.vehicle.getIDList():
         if(traci.vehicle.getTypeID(vehicleId) == "DEFAULT_VEHTYPE"):
@@ -69,6 +72,7 @@ def updateDict():
                     bus['stop_state'] = stop_state
                     bus['people_in'] = people_in
                     bus['speed_list'] = calculateAverageSpeedRunTime(vehicleID=vehicleId)
+                    bus['actual_speed'] = speed
                     if(len(next_stops) > 0):
                         bus['bus_status'] = next_stops[0].stopFlags
                         bus['next_stop'] = next_stops[0].stoppingPlaceID
@@ -83,6 +87,7 @@ def updateDict():
                             b['stop_state'] = stop_state
                             b['people_in'] = people_in
                             b['speed_list'] = calculateAverageSpeedRunTime(vehicleID=vehicleId)
+                            b['actual_speed'] = speed
                             if(len(next_stops) > 0):
                                 b['bus_status'] = next_stops[0].stopFlags
                                 b['next_stop'] = next_stops[0].stoppingPlaceID
@@ -145,12 +150,10 @@ def cleanPaline(paline):
 '''
     Function used to retrieve the time to 
     get the desidered bus_stop with the vehicle
-
-    :input vehicleId: str, bus name 
-    :input palinaID: str, name of the bus stop to analyze
 '''
 def showTimePalina(vehicleId,palinaID):
     tot = 0
+    sum = 0
     global time_analysis, speed_list, paline, total_distances
     if(vehicleId in bus_flow and vehicleId in traci.vehicle.getIDList()):
         next_stops = traci.vehicle.getStops(vehicleId)
@@ -174,7 +177,9 @@ def showTimePalina(vehicleId,palinaID):
             if(len(index) >= 1):
                 if(len(speed_list) > 0):
                     diff = step-time_analysis
-                    average_ms = sum(speed_list)/len(speed_list)
+                    for i in speed_list:
+                        sum+=float(i)
+                    average_ms = sum/len(speed_list)
                     if(diff > 0 and average_ms > 0):
                         space_did = diff*average_ms
                         dis_diff = dis-space_did
@@ -190,7 +195,21 @@ def showTimePalina(vehicleId,palinaID):
                         time_m = time_s/60
                         return str(math.ceil(time_m))
                     else:
-                        return "Problem" # Se velocità = 0
+                        if(diff > 0):
+                            space_did = diff*average_ms
+                            dis_diff = dis-space_did
+                            time_s = dis_diff/average_ms
+                            if(time_s < 0):
+                                time_s = 0
+                            time_m = 150
+                            return str(math.ceil(time_m))
+                        else:
+                            time_s = (dis/average_ms)
+                            if(time_s < 0):
+                                time_s = 0
+                            time_m = 150
+                            return str(math.ceil(time_m))
+                        # return "Problem" # Se velocità = 0
         if(len(index) > 2):
             if(index[len(index)-1] != index[len(index)-2]):
                 print("Cambio di time_analysis")
@@ -201,15 +220,23 @@ def showTimePalina(vehicleId,palinaID):
     Function that allow to update the average speed of
     a desidere vehicleID
 '''
-def calculateAverageSpeedRunTime(vehicleID): 
+def calculateAverageSpeedRunTime(vehicleID):
     # TODO: change with dict
     global speed_list
     list_vehicle = traci.vehicle.getIDList() # already checked before calling this function
     if(vehicleID in bus_flow):
         if(vehicleID in list_vehicle):
-            speed = traci.vehicle.getSpeed(vehicleID)
-            #if(speed > 0.2): #maggiore di 5 km/h = 1.5 m/s
-            speed_list.append(speed)
+            try:
+                response = requests.get("http://127.0.0.1:9393/bus/"+vehicleID+"/aa")
+                if(response.status_code == 200):
+                    bus_info = response.json()
+                    speed = bus_info[2]
+                    # print("Speed get:",speed)
+                    speed_list.append((speed))
+            except:
+                speed = traci.vehicle.getSpeed(vehicleID)
+                #if(speed > 0.2): #maggiore di 5 km/h = 1.5 m/s
+                speed_list.append(speed)
         else:
             speed_list = []
     else:
@@ -288,6 +315,15 @@ def test():
         return json.dumps(l)
 
 
+@app.route("/getspeed/<bus_id>/<gps>", methods=['GET'])
+def getSpeedVehicle(bus_id,gps):
+    #with lock:
+    if(any(bus_id in x for x in bus_added)):
+        for bus in bus_list:
+            if(bus['id'] == bus_id):
+                speed = bus['actual_speed']
+                return str(speed)
+
 '''
     Route POST that aims to add a SINGLE new bus
 
@@ -308,7 +344,7 @@ def add_single_bus(bus_id):
     Routes POST that aims to add a FLOW of new bus
 
     :param bus_id: Name of the bus to add in the net
-    es: curl -X POST 127.0.0.1:9090/busflow/J4/ --> will add a new bus J4
+    es: curl -X POST 127.0.0.1:9090/busflow/J4 --> will add a new bus J4
 '''
 @app.route("/busflow/<bus_id>", methods = ['POST'])
 def add_flow(bus_id):
@@ -407,19 +443,6 @@ def setTrafficLight(junction,phase):
         return "Problem with input"
                 
 
-'''@app.route("/palinasmart/<vehicleId>/<palinaId>", methods = ['GET'])
-def printPalina(vehicleId,palinaId):
-    global paline
-    for pal in paline:
-        if(pal['bus'] == vehicleId):
-            if(palinaId in pal):
-                return str(pal[palinaId])
-            else:
-                return "Check palina input"
-        else:
-            return "Check bus input"'''
-
-
 '''
     Route used to retrieve the time of the current 
     simulation
@@ -471,7 +494,6 @@ def updateJunction():
     if(len(junctions) > 0):
         for j in junctions:
             if not any(junction['id'] == j for junction in junctions_list):
-                print("entrato")
                 junction = {}
                 junction['id'] = j
                 junction['phase'] =  traci.trafficlight.getPhase(j)
@@ -513,12 +535,15 @@ def simulation():
                 if(not bus_id_flow in list_vehicle):
                     add_flow(bus_id_flow)
                     updateBusStop(bus_id_flow)
+            # print("Speed_list", speed_list)
         if (delay - 50) > 0:
             time.sleep((delay - 50)/1000)
         #time.sleep(0.1)
     conn.close()
 
-
+'''
+    Main program
+'''
 if __name__ == '__main__':
     print("Setted delay: ",delay)
     t1 = threading.Thread(target=lambda: app.run(port=webport, host='0.0.0.0', debug=True, use_reloader=False)).start()
