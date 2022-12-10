@@ -39,7 +39,11 @@ paline = []
 fermate = ["Marconi1-Fiera", "Marconi2-Rimessa", "Italia1-PuntaVagno", 
             "Italia2-Piave", "Italia3-Zara"]
 total_distances = [206.34, 275.32, 348.89, 289.13, 301.13, 2457.82]
-
+people_in = []
+results = []
+list_vehicle = []
+people_bye = 0
+people_byee = {} 
 
 # LOCAL FUNCTION (updates...) :
 
@@ -103,6 +107,8 @@ def updateDict():
 '''
 def updatePaline(vehicleId):
     global paline
+    global people_bye
+    global people_byee
     fermate_remains = []
     if vehicleId in traci.vehicle.getIDList():
         for bus in bus_list:
@@ -126,11 +132,29 @@ def updatePaline(vehicleId):
                                 for pal in paline:
                                     if(pal['bus'] == vehicleId):
                                         pal[f] = showTimePalina(vehicleId,f)
+                                        if(pal[f] != None):
+                                            if(f == "Marconi1-Fiera"): # TODO : retrieve the name by somewhere else!
+                                                people_bye = 0
+                                                if(int(pal[f]) > 30): # Se tempo > n le persone vanno via
+                                                    # person = traci.busstop.getPersonIDs(f)
+                                                    person = traci.person.getIDList()
+                                                    if(len(person) > 0):
+                                                        for p in person:
+                                                            traci.person.remove(p)
+                                                            people_bye += 1
+                                                        print(people_bye,"person left simulation due to ...")
                             else:
                                 for pal in paline:
                                     if(pal['bus'] == vehicleId):
                                         if(f in pal):
-                                            del pal[f]                    
+                                            del pal[f]  
+        if(people_bye > 0):
+            if not any('Marconi1-Fiera' in x for x in people_byee):
+                people_byee['Marconi1-Fiera'] = people_bye
+            else:
+                tmp = 0
+                if(people_byee['Marconi1-Fiera'] > 0):
+                    people_byee['Marconi1-Fiera'] += people_bye
         # if(len(paline) > 0): print(paline)
 
 '''
@@ -194,25 +218,34 @@ def showTimePalina(vehicleId,palinaID):
                             time_s = 1
                         time_m = time_s/60
                         return str(math.ceil(time_m))
+                    elif(average_ms < 0):
+                        average_ms = 0.001
+                        time_s = (dis/average_ms)
+                        if(time_s < 0):
+                            time_s = 1
+                        time_m = time_s/60
+                        return str(math.ceil(time_m))
                     else:
                         if(diff > 0):
-                            space_did = diff*average_ms
-                            dis_diff = dis-space_did
-                            time_s = dis_diff/average_ms
-                            if(time_s < 0):
-                                time_s = 0
-                            time_m = 150
-                            return str(math.ceil(time_m))
+                            if(average_ms > 0):
+                                space_did = diff*average_ms
+                                dis_diff = dis-space_did
+                                time_s = dis_diff/average_ms
+                                if(time_s < 0):
+                                    time_s = 0
+                                time_m = 150
+                                return str(math.ceil(time_m))
                         else:
-                            time_s = (dis/average_ms)
-                            if(time_s < 0):
-                                time_s = 0
-                            time_m = 150
-                            return str(math.ceil(time_m))
+                            if(average_ms > 0):
+                                time_s = (dis/average_ms)
+                                if(time_s < 0):
+                                    time_s = 0
+                                time_m = 150
+                                return str(math.ceil(time_m))
                         # return "Problem" # Se velocità = 0
         if(len(index) > 2):
             if(index[len(index)-1] != index[len(index)-2]):
-                print("Cambio di time_analysis")
+                # print("Cambio di time_analysis")
                 time_analysis = step 
 
 
@@ -251,26 +284,118 @@ def calculateAverageSpeedRunTime(vehicleID):
 
     :input bus_id: String, name of the Bus
 '''
-def updateBusStop(bus_id):
-    list_vehicle = traci.vehicle.getIDList()
-    bus_stops = []
-    if(any(bus_id in x for x in list_vehicle)):
-        if(traci.vehicle.getTypeID(bus_id) == "DEFAULT_VEHTYPE"):
-            next_stops = traci.vehicle.getStops(bus_id)
-            for i in range(0,len(next_stops)):
-                bus_stops.append(next_stops[i].stoppingPlaceID)
-            if not any(bus_stop['bus'] == bus_id for bus_stop in timetable):
-                _bus_stop = {}
-                _bus_stop['bus'] = bus_id
-                _bus_stop['time'] = bus_stops
-                timetable.append(_bus_stop)
+def updateWaitingPeopleS():
+    global people_in
+    for bus_stop in fermate:
+        if not any(_f['id'] == bus_stop for _f in people_in):
+            fermata = {}
+            list_people = []
+            fermata['id'] = bus_stop
+            people_wait = traci.simulation.getBusStopWaiting(bus_stop) # TODO : to change
+            if(people_wait > 0):
+                if(people_bye > 0): people_wait -= people_bye
+                list_people.append(people_wait)
+                fermata['people_waiting'] =  list_people
             else:
-                for time in timetable:
-                    if(time['bus'] == bus_id):
-                        time['time'] = bus_stops
-    #if(len(bus_stops) >0 ):return bus_stops
+                list_people = []
+                fermata['people_waiting'] = list_people
+            people_in.append(fermata)
+        else:
+            for ferm in people_in:
+                if(ferm['id'] == bus_stop):
+                    people_wait = traci.simulation.getBusStopWaiting(bus_stop)
+                    if(people_bye > 0): people_wait -= people_bye
+                    if(people_wait > 0):
+                        ferm['people_waiting'].append(people_wait)
+    if(len(people_in) > 0): 
+        # print("People in",people_in)
+        return people_in
     
 
+'''
+    Function used to retrieve the number of people
+    that were waiting to pick the bus up.
+'''
+def getFermPeople(people_in, busStopId):
+    people_left = 0
+    busStopId = "Marconi1-Fiera"
+    for ferm in people_in:
+        if(ferm['id'] == busStopId):
+            if(len(ferm['people_waiting']) > 2):
+                for i in range(1,len(ferm['people_waiting'])):
+                    if(len(ferm['people_waiting']) > 0):
+                        if(ferm['people_waiting'][i] < ferm['people_waiting'][i-1]):
+                            people_left = ferm['people_waiting'][i-1] # Salite sull'autobus
+                            # res.append(people_left)
+                            bus_stop = ferm['id']
+                            ferm['people_waiting'] = []
+                            if(len(people_byee) > 0):
+                                if(people_byee[bus_stop] > 0 and people_byee[bus_stop] < people_left):
+                                    people_left -= people_byee[bus_stop]
+                        else:                              
+                            if(len(people_byee) > 0 and people_byee[busStopId] > 0):
+                                people_left = people_byee[busStopId]
+            bus_stop = busStopId
+    if(people_left <= 0): people_left = 1
+    return people_left,bus_stop
+
+
+'''
+    Function used to compute the score of the bus
+
+    :input vehicleId: bus that we want to use for the 
+                      calculus
+'''
+def computeScoreBus(vehicleId):
+    global results
+    fermate_remain = set()
+    if(vehicleId in list_vehicle):
+        for item in traci.vehicle.getStops(vehicleId):
+            fermate_remain.add(item.stoppingPlaceID)
+        #for fer in fermate:
+        fer = "Marconi1-Fiera"
+        if(fer not in fermate_remain):
+        #if(fer == "Marconi1-Fiera"):
+            result = getFermPeople(updateWaitingPeopleS(),fer)
+            if(result is not None):
+                people_left = result[0]
+                bus_stop = result[1]     
+                if any(bus_['id'] == vehicleId for bus_ in bus_list):                        
+                    for b in bus_list:
+                        if(b['id'] == vehicleId):
+                            if(fer == bus_stop): 
+                                score = (b['people_in']/(people_left)*100)
+                                if(len(results) > 0):
+                                    if(score != results[-1]):
+                                        break
+                                        # print(b['people_in'],"/",people_left,"=",score)
+                                else:   
+                                    if score <= 100:
+                                        results.append(score)
+                                        # return str(score)
+                                    else:
+                                        score = 100
+                                        results.append(score)
+                    else:return "Error"
+                else:return "Error"
+            else:return "Error"
+    else:return "Error"
+    fermate_remain = ()
+
+
+'''
+    Route that will give you the score of the bus
+
+    :input vehicleId: vehicle score that we want
+'''
+@app.route("/scorebus/<vehicleId>", methods = ['GET'])
+def getScore(vehicleId): # TODO : implement for each vehicle, this is why there is the param vehicleId
+    if(len(results) > 0):
+        return str(results[-1])
+    else:
+        return "error!"
+
+    
 '''
     Function that updates the upcoming next busstops
     of the given bus
@@ -295,12 +420,18 @@ def getNextBusStops(vehicleId):
     :input list_vehicle: list, all the vehicle in the net
 '''
 def speed_list_cleaner(list_vehicle):
+    global people_bye
+    global results
     for bus in bus_flow:
         if(bus not in list_vehicle):
             for b in bus_list:
                 if(b['id'] == bus):
                     b['speed_list'] = []
                     print("Bus",bus," # speed list cleaned")
+            results = []
+            print("Results of the bus cleaned")
+                    #people_bye = 0
+
 
 # Routes: 
 
@@ -404,43 +535,6 @@ def updateWaitingPeople(fermate):
                 if(ferm['id'] == f):
                     ferm['people_waiting'] = traci.simulation.getBusStopWaiting(f)
     #if(len(fermate_tot) != 0): print(fermate_tot)
-
-
-'''
-    Route GET that aims to see the Traffic Light information of a 
-    specified Junction
-
-    :param junction: Name of the junction in which want to see info
-'''
-@app.route("/gettrafficlight/<junction>/", methods=['GET'])
-def showTrafficLight(junction):
-    try:
-        if(junction is not None):
-            if junction in junctions:
-                for jun in junctions_list:
-                    if(jun['id'] == junction):
-                        return ("Phase of "+junction+": "+str(jun['phase'])+" GreenYellowRed: "+str(jun['gyr']))
-    except traci.exceptions.TraCIException:
-        return "Problem with input"
-
-
-'''
-    Routes that aims to set the Traffic Light by specifing
-    junction name and phase number
-
-    :param junction: Name of the junction in which want to see info
-    :param phase: Number of phase we want to set
-'''
-@app.route("/settrafficlight/<junction>/<phase>", methods=['POST'])
-def setTrafficLight(junction,phase):
-    #junction = "J4"
-    try:
-        if(junction is not None and phase is not None):
-            traci.trafficlight.setPhase(junction,phase)
-            return "Phase"+str(phase)+" setted on "+junction
-
-    except traci.exceptions.TraCIException:
-        return "Problem with input"
                 
 
 '''
@@ -486,27 +580,6 @@ def get_gps(bus_id,gps):
     else:
         return "No bus founded with that ID"
 
-'''
-    Function used to update every step of simulation
-    the information of alla the junctions in the net
-'''
-def updateJunction():
-    if(len(junctions) > 0):
-        for j in junctions:
-            if not any(junction['id'] == j for junction in junctions_list):
-                junction = {}
-                junction['id'] = j
-                junction['phase'] =  traci.trafficlight.getPhase(j)
-                junction['gyr'] = traci.trafficlight.getRedYellowGreenState(j)
-                junctions_list.append(junction)
-            else:
-                for jun in junctions_list:
-                    if(jun['id'] == j):
-                        jun['phase'] = traci.trafficlight.getPhase(j)
-                        jun['gyr'] = traci.trafficlight.getRedYellowGreenState(j)
-    #print(junctions_list)
-
-
 
 '''
     Main program:
@@ -515,6 +588,7 @@ def simulation():
     global var_flow
     global bus_id_flow
     global step
+    global list_vehicle
     print("Starting simulation...")
     step = 0
     sim = 1
@@ -525,20 +599,20 @@ def simulation():
             sim = traci.simulation.getMinExpectedNumber() > 0
             conn.simulationStep()
             step += 1  
+            # print(traci.simulation.getBusStopWaiting("Marconi1-Fiera"))
         if(var_flow != 0): # Se è stato usata la funzione flow prima
             list_vehicle = traci.vehicle.getIDList()
+            updateWaitingPeopleS()
             speed_list_cleaner(list_vehicle=list_vehicle)
             for bus in bus_flow:
                 calculateAverageSpeedRunTime(vehicleID=bus)
                 updatePaline(vehicleId=bus)
+                computeScoreBus(bus)
             for bus_id_flow in bus_flow:
                 if(not bus_id_flow in list_vehicle):
                     add_flow(bus_id_flow)
-                    updateBusStop(bus_id_flow)
-            # print("Speed_list", speed_list)
         if (delay - 50) > 0:
             time.sleep((delay - 50)/1000)
-        #time.sleep(0.1)
     conn.close()
 
 '''

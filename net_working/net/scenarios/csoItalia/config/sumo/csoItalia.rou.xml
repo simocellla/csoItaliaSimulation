@@ -30,7 +30,7 @@
 
     <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="120.00">
         <walk from="5793098#1" busStop="Marconi1-Fiera" />
-        <ride to="751968798#12" lines="AAAA"/>
+        <ride to="751968798#12" lines="ANY"/>
         <walk to="751968798#12"/>
     </personFlow>
     <!--
