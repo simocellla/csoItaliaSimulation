@@ -1,46 +1,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>HTML.it</title>
+<title>CsoItalia Simulation</title>
 </head>
-<body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<!--
-<script type="text/javascript">
-    setInterval(refreshIframe1, 5000);
-    function refreshIframe1() {
-        $("#palina")[0].src = $("#palina")[0].src;
+<script>
+    window.setInterval("reloadIFrame();", 1000);
+    
+    function reloadIFrame() {
+     document.frames["palina"].location.reload();
     }
 </script>
--->
-<script type="text/javascript">
-    $('palina').click(function() {
-    var thisIframe = $(this).attr('rel');
-    var currentState = $(thisIframe).attr('src');
-    function removeSrc() {
-        $(thisIframe).attr('src', '');
-    }
-    setTimeout (removeSrc, 100);
-    function replaceSrc() {
-        $(thisIframe).attr('src', currentState);
-    }
-    setTimeout (replaceSrc, 200);
-});
-</script>
-<frameset rows="50%,50%" cols="50%, 50%">
+
+<frameset rows="80%,20%" cols="70%,30%">
 <frame src="http://127.0.0.1:9999" name="simulation">
 <frame src="palina.html" id="palina">
 <frame src="control.html" name="controlFlow">
 <frame src="injection.html">
 
-<noframes>
-<p>Qui può essere indicato il link a
-<a href="senzaFrame.html"> una versione del sito</a>
-che non utilizzi un layout a frame
-</p>
-</noframes>
-
 </frameset>
-</body>
 </html>

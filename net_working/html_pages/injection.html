@@ -2,7 +2,10 @@
 <html>
     <body>
         <head>
-           <input type="button" id='script' name="scriptbutton" value=" Run Script " onclick="exec('python3 injection_speed.py J4 -10');">
+            <h4>Injection bus panel</h4>
+            <form method="POST" action="http://127.0.0.1:9090/executeinjection/J4">
+                <input type="submit" value="Inject Bus Speed">
+            </form>
         </head>
     </body>
 </html>
