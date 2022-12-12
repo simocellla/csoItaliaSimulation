@@ -1,0 +1,17 @@
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    setInterval(refreshIframe1, 5000);
+    function refreshIframe1() {
+        $("#Frame1")[0].src = $("#Frame1")[0].src;
+    }
+</script>
+<iframe id="palina" src="https://www.aspforums.net" frameborder="0"></iframe>
+<hr />Using JavaScript<br />
+<script type="text/javascript">
+    setInterval(refreshIframe2, 5000);
+    function refreshIframe2() {
+        var frame = document.getElementById("Frame2");
+        frame.src = frame.src;
+    }
+</script>
+<iframe id="Frame2" src="https://www.aspforums.net" frameborder="0"></iframe>
