@@ -11,7 +11,7 @@ import sys
 '''
 
 def __init__():
-    sumoBinary = checkBinary('sumo') # sumo or sumo-gui with visual view
+    sumoBinary = checkBinary('sumo-gui') # sumo or sumo-gui with visual view
     sumoConfig = "oldNetwork/002_new.sumocfg"
     sumoCmd = [sumoBinary, "-c", sumoConfig]
     traci.start(sumoCmd)
@@ -147,6 +147,7 @@ if __name__ == "__main__":
     while (i < 3600):
         time.sleep(0.1)# Speed of simulation
         traci.simulationStep()
+        showBusBasicInfo()
         if(i%10 == 0): # after 10sec
             bus_stop_people = peopleInOut(listPeople=list_people)
             if(bus_stop_people != None):
