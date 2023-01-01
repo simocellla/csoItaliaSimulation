@@ -77,6 +77,12 @@ def updateDict():
                     bus['people_in'] = people_in
                     bus['speed_list'] = calculateAverageSpeedRunTime(vehicleID=vehicleId)
                     bus['actual_speed'] = speed
+                    if len(results) > 0:
+                        if any(vehicleId in dicts for dicts in results):
+                            for p in results:
+                                for key, value in dict(p).items():
+                                    if key == vehicleId:
+                                        bus['score'] = value
                     if(len(next_stops) > 0):
                         bus['bus_status'] = next_stops[0].stopFlags
                         bus['next_stop'] = next_stops[0].stoppingPlaceID
@@ -91,12 +97,20 @@ def updateDict():
                             b['stop_state'] = stop_state
                             b['people_in'] = people_in
                             b['speed_list'] = calculateAverageSpeedRunTime(vehicleID=vehicleId)
+                            if len(results) > 0:
+                                if any(vehicleId in dicts for dicts in results):
+                                    for p in results:
+                                        for key, value in dict(p).items():
+                                            if key == vehicleId:
+                                                b['score'] = value
                             b['actual_speed'] = speed
                             if(len(next_stops) > 0):
                                 b['bus_status'] = next_stops[0].stopFlags
                                 b['next_stop'] = next_stops[0].stoppingPlaceID
                                 
-        # if(len(bus_list) > 0 ): print(bus_list)
+        '''if(len(bus_list) > 0 ): 
+            for b in bus_list:
+                print(b['id'])'''
 
 
 ''''
@@ -135,7 +149,7 @@ def updatePaline(vehicleId):
                                         if(pal[f] != None):
                                             if(f == "Marconi1-Fiera"): # TODO : retrieve the name by somewhere else!
                                                 people_bye = 0
-                                                if(int(pal[f]) > 30): # Se tempo > n le persone vanno via
+                                                if(int(pal[f]) > 50): # Se tempo > n le persone vanno via
                                                     # person = traci.busstop.getPersonIDs(f)
                                                     person = traci.person.getIDList()
                                                     if(len(person) > 0):
@@ -257,23 +271,23 @@ def calculateAverageSpeedRunTime(vehicleID):
     # TODO: change with dict
     global speed_list
     list_vehicle = traci.vehicle.getIDList() # already checked before calling this function
-    if(vehicleID in bus_flow):
-        if(vehicleID in list_vehicle):
-            try:
-                response = requests.get("http://127.0.0.1:9393/bus/"+vehicleID+"/aa")
-                if(response.status_code == 200):
-                    bus_info = response.json()
-                    speed = bus_info[2]
-                    # print("Speed get:",speed)
-                    speed_list.append((speed))
-            except:
-                speed = traci.vehicle.getSpeed(vehicleID)
-                #if(speed > 0.2): #maggiore di 5 km/h = 1.5 m/s
-                speed_list.append(speed)
-        else:
-            speed_list = []
+    #if(vehicleID in bus_flow): # changing in order to make it work for each bus
+    if(vehicleID in list_vehicle):
+        try:
+            response = requests.get("http://127.0.0.1:9393/bus/"+vehicleID+"/aa")
+            if(response.status_code == 200):
+                bus_info = response.json()
+                speed = bus_info[2]
+                # print("Speed get:",speed)
+                speed_list.append((speed))
+        except:
+            speed = traci.vehicle.getSpeed(vehicleID)
+            #if(speed > 0.2): #maggiore di 5 km/h = 1.5 m/s
+            speed_list.append(speed)
     else:
         speed_list = []
+    '''else:
+        speed_list = []'''
         #print("-speed list cleaned-")
     return speed_list
 
@@ -339,6 +353,7 @@ def getFermPeople(people_in, busStopId):
     if(people_left <= 0): people_left = 1
     return people_left,bus_stop
 
+result = []
 
 '''
     Function used to compute the score of the bus
@@ -354,7 +369,7 @@ def computeScoreBus(vehicleId):
             fermate_remain.add(item.stoppingPlaceID)
         #for fer in fermate:
         fer = "Marconi1-Fiera"
-        if(fer not in fermate_remain):
+        if(fer not in fermate_remain and len(fermate_remain) > 1):
         #if(fer == "Marconi1-Fiera"):
             result = getFermPeople(updateWaitingPeopleS(),fer)
             if(result is not None):
@@ -365,22 +380,31 @@ def computeScoreBus(vehicleId):
                         if(b['id'] == vehicleId):
                             if(fer == bus_stop): 
                                 score = (b['people_in']/(people_left)*100)
+                                if score >= 100:
+                                    score = 100
+                                # se c'è già qualcosa dentro alla lista di dict:
                                 if(len(results) > 0):
-                                    if(score != results[-1]):
-                                        break
-                                        # print(b['people_in'],"/",people_left,"=",score)
+                                    #if any(vehicleId in dicts for dicts in results): no necessary
+                                    if any(vehicleId in p for p in results): 
+                                        for p in results:
+                                            for key, value in dict(p).items():
+                                                if key == vehicleId:
+                                                    if value != score:
+                                                        p[key] = score
+                                    else:
+                                        d = {vehicleId:score}
+                                        results.append(d)
                                 else:   
                                     if score <= 100:
-                                        results.append(score)
-                                        # return str(score)
+                                        d = {vehicleId:score}
+                                        results.append(d)
                                     else:
                                         score = 100
-                                        results.append(score)
-                    else:return "Error"
-                else:return "Error"
-            else:return "Error"
-    else:return "Error"
+                                        d = {vehicleId:score}
+                                        results.append(d)
     fermate_remain = ()
+    '''if (len(results) > 0):
+        print(results)'''
 
 
 '''
@@ -389,11 +413,15 @@ def computeScoreBus(vehicleId):
     :input vehicleId: vehicle score that we want
 '''
 @app.route("/scorebus/<vehicleId>", methods = ['GET'])
-def getScore(vehicleId): # TODO : implement for each vehicle, this is why there is the param vehicleId
+def getScore(vehicleId): 
     if(len(results) > 0):
-        return str(results[-1])
-    else:
-        return "error!"
+        if any(vehicleId in dicts for dicts in results):
+            for p in results:
+                for key, value in dict(p).items():
+                    if key == vehicleId:
+                        return str(value)
+        return str(-1)
+    return str(-1)
 
     
 '''
@@ -428,9 +456,16 @@ def speed_list_cleaner(list_vehicle):
                 if(b['id'] == bus):
                     b['speed_list'] = []
                     print("Bus",bus," # speed list cleaned")
-            results = []
-            print("Results of the bus cleaned")
-                    #people_bye = 0
+    # Cleaning the bus_list
+    for bus in bus_list:
+        if bus['id'] not in list_vehicle:
+            bus_list.remove(bus)
+    # Cleaning the score list of dict
+    for p in results:
+        for key, value in dict(p).items():
+            if key not in list_vehicle:
+                results.remove(p)
+                # print("Results of the bus cleaned")
 
 
 # Routes: 
@@ -463,10 +498,11 @@ def getSpeedVehicle(bus_id,gps):
 '''
 @app.route("/bus/<bus_id>", methods = ['POST'])
 def add_single_bus(bus_id):
-    if bus_id != None:    
-        traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")
-        #traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
-        return json.dumps(request.form)
+    if bus_id != None:  
+        with lock:  
+            traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")
+            #traci.vehicle.setBusStop(bus_id,"bs_0",duration=15)
+            return json.dumps(request.form)
     else:
         return "Problem occured"
 
@@ -480,6 +516,7 @@ def add_single_bus(bus_id):
 @app.route("/busflow/<bus_id>", methods = ['POST'])
 def add_flow(bus_id):
     global var_flow
+    global bus_flow
     with lock:
         #global bus_id_flow
         list_vehicle = traci.vehicle.getIDList()
@@ -488,6 +525,15 @@ def add_flow(bus_id):
             bus_flow.add(bus_id)
             traci.vehicle.add(bus_id, "busRoute", typeID="DEFAULT_VEHTYPE")   
             return "Added Bus flow "+bus_id+'\n'
+
+
+'''
+    Route made for making injection to the desired bus
+'''
+@app.route("/executeinjection/<bus_id>", methods=['POST'])
+def injection(bus_id):
+    os.system('python3 injection_speed.py 31 -10')
+    return "Attack Done!"
 
 
 '''
@@ -546,7 +592,7 @@ def getTime():
     global step
     return str(step)
 
-
+from functools import reduce
 '''
     Route used to get all the busstop situation in
     the net
@@ -558,8 +604,6 @@ def getPaline():
         return paline
     else:
         return "No paline avaiable"
-    
-
 '''
     Routes GET that aims to see Latitude and Longitude of 
     the specified Bus
@@ -574,11 +618,27 @@ def get_gps(bus_id,gps):
                 lat = bus['lat']
                 lon = bus['lon']
                 speed = bus['speed_list']
-                # speed = bus['speed']
-                # speed *= 3.6
                 return [str(lat),str(lon),speed]
     else:
         return "No bus founded with that ID"
+
+
+
+def updateVariable():
+    global var_flow
+    list_vehicle = traci.vehicle.getIDList()
+    for veh in list_vehicle:
+        if(traci.vehicle.getTypeID(veh) == "DEFAULT_VEHTYPE" and veh not in bus_flow):
+            bus_flow.add(veh)
+            print("bus",veh,"added to bus flow")
+    if(len(bus_flow) > 0):
+        for v in bus_flow.copy():
+            if v not in list_vehicle:
+                bus_flow.remove(v)
+    if(len(bus_flow) > 0):
+        var_flow = 1
+    else: 
+        var_flow = 0
 
 
 '''
@@ -596,10 +656,10 @@ def simulation():
     while sim > 0:
         with lock:
             updateDict()
+            updateVariable()
             sim = traci.simulation.getMinExpectedNumber() > 0
             conn.simulationStep()
-            step += 1  
-            # print(traci.simulation.getBusStopWaiting("Marconi1-Fiera"))
+            step += 1
         if(var_flow != 0): # Se è stato usata la funzione flow prima
             list_vehicle = traci.vehicle.getIDList()
             updateWaitingPeopleS()

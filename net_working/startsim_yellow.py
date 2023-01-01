@@ -1,4 +1,3 @@
-from crypt import methods
 import os, requests
 from flask import Flask, request
 
@@ -67,7 +66,7 @@ def get_gps(bus_id,gps):
 
 '''
     Route used to clean the bus list after some specific
-    action's flow. (see injection for more detail)
+    action's flow. (see injection.py for more detail)
 
     :param bus_id: name of the bus
 '''
