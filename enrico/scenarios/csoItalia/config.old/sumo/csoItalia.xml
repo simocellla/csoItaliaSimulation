@@ -12,9 +12,10 @@
     <busStop id="Italia3" lane="751968798#11_0" startPos="18.72" endPos="28.72"/>
     <busStop id="bs_5" lane="58774924#9_1" startPos="37.29" endPos="47.29"/>
     -->
-    <busStop id="Italia1-PuntaVagno" lane="751968798#3_1" startPos="136.56" endPos="146.56" personCapacity="150"/>
-    <busStop id="Italia2-Piave" lane="751968798#9_0" startPos="26.20" endPos="36.20" personCapacity="150"/>
-    <busStop id="Italia3-Zara" lane="751968798#12_1" startPos="49.15" endPos="59.15" personCapacity="150"/>
-    <busStop id="Marconi1-Fiera" lane="5793098#1_1" startPos="35.09" endPos="45.09" personCapacity="150"/>
-    <busStop id="Marconi2-Rimessa" lane="566784919#0_0" startPos="37.26" endPos="47.26" personCapacity="150"/>
+    <busStop id="Italia1-PuntaVagno" lane="751968798#3_1" startPos="136.56" endPos="146.56"/>
+    <busStop id="Italia2-Piave" lane="751968798#9_0" startPos="26.20" endPos="36.20"/>
+    <busStop id="Italia3-Zara" lane="751968798#12_1" startPos="49.15" endPos="59.15"/>
+    <busStop id="Marconi1-Fiera" lane="5793098#1_1" startPos="35.09" endPos="45.09"/>
+    <busStop id="Marconi2-Rimessa" lane="566784919#0_0" startPos="37.26" endPos="47.26"/>
 </additional>
+

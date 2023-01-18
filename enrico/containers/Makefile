@@ -1,5 +1,5 @@
 .PHONY: build
-build: novnc sumo traci startsim
+build: novnc sumo simbackend
 
 .PHONY: novnc
 novnc:
@@ -11,12 +11,7 @@ sumo:
 	sudo setenforce 0 || true
 	sudo podman build -t crltp-sumo sumo
 
-.PHONY: traci
-traci:
+.PHONY: simbackend
+simbackend:
 	sudo setenforce 0 || true
-	sudo podman build -t crltp-traci traci 
-
-.PHONY: startsim
-startsim:
-	sudo setenforce 0 || true
-	sudo podman build -t crltp-startsim startsim
+	sudo podman build -t crltp-simbackend simbackend
