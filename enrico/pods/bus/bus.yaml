@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $PODNAME
+  labels:
+    testlabel: test
+spec:
+  # Bus specification
+  containers:
+    - name: bus
+      image: crltp-bus
+      env:
+      - name: BUS_name
+        value: $BUS_name

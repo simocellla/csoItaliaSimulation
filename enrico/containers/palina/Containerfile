@@ -1,0 +1,6 @@
+FROM docker.io/python:3
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY palina.py .
+# For now specify here the name of the palina 
+CMD [ "python3", "./palina.py"]

@@ -26,7 +26,7 @@ bus:
 	sudo setenforce 0 || true
 	sudo podman build -t crltp-bus bus
 
-#.PHONY: palina
-#palina:
-#	sudo setenforce 0 || true
-#	sudo podman build -t crltp-palina palina
+.PHONY: palina
+palina:
+	sudo setenforce 0 || true
+	sudo podman build -t crltp-palina palina

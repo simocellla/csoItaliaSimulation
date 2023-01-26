@@ -30,6 +30,15 @@ SUMO_NOVNC_PORT=9999
 # REST API PORT for querying SUMO from CR
 SIM_API_PORT=9090
 AMT_API_PORT=9093
+# Name of the busses:
+BUS_name=A1
+# Name of the paline
+SD_ONE=Marconi1-Fiera
+SD_TWO=Marconi2-Rimessa
+SD_THREE= Italia1-PuntaVagno
+SD_FOUR=Italia2-Piave
+SD_FIVE=Italia3-Zara
+
 
 start: network-create
 	# sumo
@@ -53,18 +62,81 @@ start: network-create
 	ETH1_IP=1.1.1.100 \
 	$(MAKE) -C ../../pods/amt/ start
 
+	# Bus A1
+	PODNAME=bus \
+	ETH0_NET=mgmt-crltp \
+	ETH0_IP=10.254.254.102 \
+	ETH1_NET=simint-crltp \
+	ETH1_IP=3.3.0.2 \
+	BUS_name=$(BUS_name) \
+	PYTHONUNBUFFERED=1 \
+	$(MAKE) -C ../../pods/bus/ start
+
+	# smartdisplay Marconi1-Fiera
+	PODNAME=smartdisplay_Marconi1 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.3 \
+	SD_name=$(SD_ONE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Marconi2-Rimessa
+	PODNAME=smartdisplay_Marconi2 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.4 \
+	SD_name=$(SD_TWO) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia1-PuntaVagno
+	PODNAME=smartdisplay_Italia1 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.5 \
+	SD_name=$(SD_THREE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia2-Piave
+	PODNAME=smartdisplay_Italia2 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.6 \
+	SD_name=$(SD_FOUR) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia3-Zara
+	PODNAME=smartdisplay_Italia3 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.7 \
+	SD_name=$(SD_FIVE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+
 stop:
 	PODNAME=sumo \
 	$(MAKE) -C ../../pods/sumo/ stop
 	PODNAME=amt \
 	$(MAKE) -C ../../pods/amt/ stop
+	PODNAME=bus \
+	$(MAKE) -C ../../pods/bus/ stop
+	PODNAME=smartdisplay_Marconi1 \
+	$(MAKE) -C ../../pods/smartdisplay/ stop
+	PODNAME=smartdisplay_Marconi2 \
+	$(MAKE) -C ../../pods/smartdisplay/ stop
+	PODNAME=smartdisplay_Italia1 \
+	$(MAKE) -C ../../pods/smartdisplay/ stop
+	PODNAME=smartdisplay_Italia2 \
+	$(MAKE) -C ../../pods/smartdisplay/ stop
+	PODNAME=smartdisplay_Italia3 \
+	$(MAKE) -C ../../pods/smartdisplay/ stop
 
 .PHONY: network-create
 network-create:
 	$(call create_net,mgmt-crltp,bridge,10.254.254.0/24,10.254.254.1)
 	$(call create_net,amt-crltp,bridge,1.1.1.0/24,1.1.1.1)
+	$(call create_net,simint-crltp,bridge,3.3.0.0/24,3.3.0.1)
+	$(call create_net,comune-crltp,bridge,2.2.2.0/24,2.2.2.1)
+
 
 .PHONY: network-delete
 network-delete:
 	$(call delete_net,mgmt-crltp)
 	$(call delete_net,amt-crltp)
+	$(call delete_net,simint-crltp)
+	$(call delete_net,comune-crltp)

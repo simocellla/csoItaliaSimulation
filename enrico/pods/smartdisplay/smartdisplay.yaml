@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $PODNAME
+  labels:
+    testlabel: test
+spec:
+  # Palina specification
+  containers:
+    - name: palina
+      image: crltp-palina
+      env:
+      - name: SD_name
+        value: $SD_name
