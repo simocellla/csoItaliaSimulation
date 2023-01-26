@@ -1,5 +1,5 @@
-PODNAME?=sumo
-CONF=sumo.yaml
+PODNAME?=amt
+CONF=amt.yaml
 NET=
 
 ifdef ETH0_NET

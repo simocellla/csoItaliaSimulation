@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $PODNAME
+  labels:
+    testlabel: test
+spec:
+  # volumes:
+  #   - name: sumoconfig
+  #     hostPath:
+  #       path: $CONFIGPATH
+  #       type: Directory
+  containers:
+    # - name: webgui
+    #   image: crltp-novnc
+    #   #command: [ "tail", "-f", "/dev/null" ]
+    #   env:
+    #     - name: DISPLAY_X
+    #       value: $DISPLAY_X
+    #     - name: DISPLAY_Y
+    #       value: $DISPLAY_Y
+    #   ports:
+    #     - name: novnc-port
+    #       containerPort: 8080
+    #       hostPort: $SUMO_NOVNC_PORT
+    #       protocol: TCP
+    # - name: sumoct
+    #   restartPolicy: Always
+    #   image: crltp-sumo
+    #   env:
+    #     - name: DISPLAY
+    #       value: 127.0.0.1:1
+    #     - name: CONFIG
+    #       value: $CONFIG
+    #     - name: START
+    #       value: $START
+    #     - name: DELAY
+    #       value: $DELAY
+    #     - name: SUMO_HOME
+    #       value: /usr/share/sumo
+    #   ports:
+    #     - name: sumo-port
+    #       containerPort: $RPORT
+    #       hostPort: $RPORT
+    #       protocol: TCP
+    #   volumeMounts:
+    #     - name: sumoconfig
+    #       mountPath: /sumo
+#    - name: amtapi
+#      image: crltp-amtapi
+#      env:
+#        - name: SIM_PORT
+#          value: 8813
+#        - name: SIM_HOST
+#          value: 10.254.254.100
+#        - name: SIM_API_PORT
+#          value: 9093
+
+    # SimYellow declaration
+    - name: simyellow
+      image: crltp-simyellow
+      env:
+        - name: SIM_LABEL
+          value: main
+        - name: SIM_API_PORT
+          value: $SIM_API_PORT
+        - name: AMT_API_PORT
+          value: $AMT_API_PORT
+          #value: 9393
+
+    # Bus declaration      
+    - name: bus
+      image: crltp-bus

@@ -1,5 +1,5 @@
 .PHONY: build
-build: novnc sumo simbackend
+build: novnc sumo simbackend simyellow bus palina
 
 .PHONY: novnc
 novnc:
@@ -15,3 +15,18 @@ sumo:
 simbackend:
 	sudo setenforce 0 || true
 	sudo podman build -t crltp-simbackend simbackend
+
+.PHONY: simyellow
+simyellow:
+	sudo setenforce 0 || true
+	sudo podman build -t crltp-simyellow simyellow
+
+.PHONY: bus
+bus:
+	sudo setenforce 0 || true
+	sudo podman build -t crltp-bus bus
+
+#.PHONY: palina
+#palina:
+#	sudo setenforce 0 || true
+#	sudo podman build -t crltp-palina palina

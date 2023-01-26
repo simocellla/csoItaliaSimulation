@@ -622,6 +622,12 @@ def get_gps(bus_id,gps):
     else:
         return "No bus founded with that ID"
 
+'''
+    Route that shows the environment in use
+'''
+@app.route("/environment", methods = ['GET'])
+def getEnvironment():
+    return "Startsim_Backend"
 
 
 def updateVariable():
@@ -653,6 +659,8 @@ def simulation():
     step = 0
     sim = 1
     list_vehicle = traci.vehicle.getIDList()
+    add_flow("A1")
+    var_flow = 1
     while sim > 0:
         with lock:
             updateDict()

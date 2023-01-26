@@ -2,4 +2,4 @@ FROM docker.io/python:3
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY startsim.py .
-CMD [ "python", "./startsim.py" ]
+CMD [ "python3", "./startsim.py" ]

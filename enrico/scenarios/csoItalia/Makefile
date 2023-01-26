@@ -29,6 +29,7 @@ SUMO_REMOTEPORT=8813
 SUMO_NOVNC_PORT=9999
 # REST API PORT for querying SUMO from CR
 SIM_API_PORT=9090
+AMT_API_PORT=9093
 
 start: network-create
 	# sumo
@@ -43,6 +44,7 @@ start: network-create
 	SUMO_NOVNC_PORT=$(SUMO_NOVNC_PORT) \
 	SIM_API_PORT=$(SIM_API_PORT) \
 	$(MAKE) -C ../../pods/sumo/ start
+	
 	# amt
 	PODNAME=amt \
 	ETH0_NET=mgmt-crltp \
@@ -66,5 +68,3 @@ network-create:
 network-delete:
 	$(call delete_net,mgmt-crltp)
 	$(call delete_net,amt-crltp)
-
-
