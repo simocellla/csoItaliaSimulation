@@ -1,0 +1,10 @@
+prometheus:
+    - name : prometheus
+      image: prom/prometheus
+      container_name: crltp-prometheus
+      ports:
+        - 9091:9091
+      volumes:
+        - /tmp/prometheus:/prometheus
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  

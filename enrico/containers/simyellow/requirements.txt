@@ -1,3 +1,5 @@
 flask
 traci
 requests
+prometheus_flask_exporter
+prometheus_client

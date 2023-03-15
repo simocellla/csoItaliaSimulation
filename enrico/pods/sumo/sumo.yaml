@@ -5,6 +5,7 @@ metadata:
   labels:
     testlabel: test
 spec:
+  # hostIPC: true
   volumes:
     - name: sumoconfig
       hostPath:
@@ -13,21 +14,30 @@ spec:
   containers:
     - name: webgui
       image: crltp-novnc
-      #command: [ "tail", "-f", "/dev/null" ]
+      # command: [ "tail", "-f", "/dev/null" ]
+      # command: ["sh", "-c", "vncserver -geometry 1024x768 :1 -noshared -X11ShmDisabled"]
+      # command: [ "/usr/bin/vncserver", "-geometry", "1024x768", ":1", "-noshared", "-X11ShmDisabled" ]
       env:
+        #- name: QT_X11_NO_MITSHM 
+        #  value: 1
         - name: DISPLAY_X
           value: $DISPLAY_X
         - name: DISPLAY_Y
           value: $DISPLAY_Y
+        - name: VNC_PW
+          value: admin12
       ports:
         - name: novnc-port
           containerPort: 8080
           hostPort: $SUMO_NOVNC_PORT
           protocol: TCP
+          
     - name: sumoct
       restartPolicy: Always
       image: crltp-sumo
       env:
+        #- name: QT_X11_NO_MITSHM 
+        #  value: 1
         - name: DISPLAY
           value: 127.0.0.1:1
         - name: CONFIG

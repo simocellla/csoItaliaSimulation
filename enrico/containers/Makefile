@@ -30,3 +30,8 @@ bus:
 palina:
 	sudo setenforce 0 || true
 	sudo podman build -t crltp-palina palina
+	
+.PHONY: prometheus
+prometheus:
+	sudo setenforce 0 || true
+	sudo podman build -t crltp-prometheus prometheus

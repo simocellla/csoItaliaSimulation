@@ -9,13 +9,14 @@ import os
 '''
 
 #url_clean_bus = "http://10.254.254.100:9393/busclean/"
+#url_clean_bus = "http://10.254.254.101:5000/busclean/"
 url_clean_bus = "http://10.254.254.101:5000/busclean/"
 
 def __init__():
     global bus_name
     global url_clean_bus
     try:
-        # bus_name = str(sys.argv[1])
+        #bus_name = str(sys.argv[1])
         bus_name = str(os.environ.get("BUS_name"))
     except IndexError:
         print('[+] Usage: python ' + sys.argv[0] + ' <Bus ID>')
@@ -34,10 +35,20 @@ def __init__():
 
 def readUpdate():
     # GET path:
-    url_get_ = 'http://10.254.254.100:9090/bus/'+bus_name+'/gps'
-    url_get = 'http://10.254.254.100:9090/getspeed/'+bus_name+'/gps' # TODO : implementare come si deve!
+    #url_get_ = 'http://192.168.1.18:9090/bus/'+bus_name+'/gps'
+    #url_get = 'http://192.168.1.18:9090/getspeed/'+bus_name+'/gps' 
+
+    # Local:
+    '''
+    url_get_ = 'http://127.0.0.1:9090/bus/'+bus_name+'/gps'
     url_post = 'http://10.254.254.101:5000/updatebus/'+bus_name
-    
+    url_get = 'http://127.0.0.1:9090/getspeed/'+bus_name+'/gps'
+    # Pods:
+    '''
+    url_get_ = 'http://10.254.254.100:9090/bus/'+bus_name+'/gps'
+    url_get = 'http://10.254.254.100:9090/getspeed/'+bus_name+'/gps' 
+    url_post = 'http://10.254.254.101:5000/updatebus/'+bus_name
+
     try:
         x = requests.get(url_get_)
         if(x.status_code == 200):
@@ -50,10 +61,10 @@ def readUpdate():
                 speed = y.text
                 print("Speed:",speed)
                 speed = data
-            todo = {"lat":lat,"lon":lon,"speed":speed}
-            response = requests.post(url_post,data=todo)
-            if(response.status_code == 200):
-                print("POST action done")
+                todo = {"id":bus_name,"lat":lat,"lon":lon,"speed":speed}
+                response = requests.post(url_post,data=todo)
+                if(response.status_code == 200):
+                    print("POST action done")
     except:
         print("[+] Connection problem!")
         '''todo = {"bus": bus_name}
