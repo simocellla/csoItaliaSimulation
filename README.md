@@ -46,14 +46,14 @@ Once the environment has been created, it will be possible to interact with it, 
 In order to create the scenario under consideration, a mobility simulator, SUMO was chosen for this purpose.
 Once the maps were exported in OSM format, and converted to XML to give them to SUMO, the network looks as follows: 
 
-![](net_working/fig/sumoView.jpg?raw=true "Sumo view")
+![](localhostTesting/fig/sumoView.jpg?raw=true "Sumo view")
 
 The stretch of road connecting Corso Guglielmo Marconi and Corso Italia in Genoa was used as a simulation environment.
 
 ### Composition of the Networks
 Podman was used to create the Networks part; the sketch of the networks, as set up in the implemented scenario, can be seen in the figure presented below.
 
-![](net_working/fig/NetSketch.jpg?raw=true "Networks sketch")
+![](localhostTesting/fig/NetSketch.jpg?raw=true "Networks sketch")
 
 As can be seen, four main networks were created:
 - AMT proprietary control center network [chosen address: http://10.254.254.101:5000]
@@ -75,7 +75,7 @@ Specifically, the group of people will use the bus of line 31, which can take th
 
 The flow of the trip can be described by the figure below:
 
-![](net_working/fig/scenario.jpg?raw=true "Scenario people's flow")
+![](localhostTesting/fig/scenario.jpg?raw=true "Scenario people's flow")
 
 As can be seen in order to decide which Bus to take passengers will choose to use the smart displays that can be found at each bus stop.
 There are 5 smart displays implemented for this Cyber Range:
@@ -118,11 +118,11 @@ All these data visualization processes were developed through the technologies o
 A graphical view of the appearance of the two designed dashboard could be seen below:
 
 Situation Awareness Dashboard:
-![](net_working/fig/situationAwareness.jpg?raw=true "Situation Awareness")
+![](localhostTesting/fig/situationAwareness.jpg?raw=true "Situation Awareness")
 
 <br><br>
 White Team View Dashboard:
-![](net_working/fig/whiteTeamView.jpg?raw=true "White Team View")
+![](localhostTesting/fig/whiteTeamView.jpg?raw=true "White Team View")
 
 ## Attacker's point of view
 
@@ -130,7 +130,7 @@ It is assumed that the attacker has managed to locate the APIs that the company 
 
 Since the attacker’s main goal in this context is to introduce disorder into the passenger information network, which consists of smart displays placed at each bus stop, it is assumed that the attacker was initially able to learn the bus’s write requests and use his knowledge to transmit its own information to the control center with inconsistent data. 
 
-This was replicated with a script in Python, the so called [injection_speed.py](net_working/injection_speed.py). Intuitively, once the script is run, the attacker is able to send inconsistent data to the AMT exposed API, which propagates this erroneous information throughout the network and triggers a cascading effect that spreads to the smart displays at bus stops.
+This was replicated with a script in Python, the so called [injection_speed.py](localhostTesting/injection_speed.py). Intuitively, once the script is run, the attacker is able to send inconsistent data to the AMT exposed API, which propagates this erroneous information throughout the network and triggers a cascading effect that spreads to the smart displays at bus stops.
 
 ## Consequences of the attack in the network
 
