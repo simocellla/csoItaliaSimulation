@@ -1,4 +1,0 @@
-gunicorn
-flask
-prometheus-flask-exporter
-traci

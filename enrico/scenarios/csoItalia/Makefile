@@ -32,6 +32,7 @@ SIM_API_PORT=9090
 AMT_API_PORT=9093
 # Name of the busses:
 BUS_name=A1
+BUS_2nd=A2
 # Name of the paline
 SD_ONE=Marconi1-Fiera
 SD_TWO=Marconi2-Rimessa
@@ -63,7 +64,7 @@ start: network-create
 	$(MAKE) -C ../../pods/amt/ start
 
 	# Bus A1
-	PODNAME=bus \
+	PODNAME=busA1 \
 	ETH0_NET=mgmt-crltp \
 	ETH0_IP=10.254.254.102 \
 	ETH1_NET=simint-crltp \
@@ -72,40 +73,64 @@ start: network-create
 	PYTHONUNBUFFERED=1 \
 	$(MAKE) -C ../../pods/bus/ start
 
-	# smartdisplay Marconi1-Fiera
-	PODNAME=smartdisplay_Marconi1 \
-	ETH0_NET=simint-crltp \
-	ETH0_IP=3.3.0.3 \
-	SD_name=$(SD_ONE) \
-	$(MAKE) -C ../../pods/smartdisplay/ start
+	# Bus A2
+	PODNAME=busA2 \
+	ETH0_NET=mgmt-crltp \
+	ETH0_IP=10.254.254.103 \
+	ETH1_NET=simint-crltp \
+	ETH1_IP=3.3.0.3 \
+	BUS_name=$(BUS_2nd) \
+	PYTHONUNBUFFERED=1 \
+	$(MAKE) -C ../../pods/bus/ start
+	
+	# prometheus
+	sudo podman start prometheus
+    # PODNAME=prometheus \
+	# $(MAKE) -C ../../pods/prometheus/ start 
 
-	# smartdisplay Marconi2-Rimessa
-	PODNAME=smartdisplay_Marconi2 \
-	ETH0_NET=simint-crltp \
-	ETH0_IP=3.3.0.4 \
-	SD_name=$(SD_TWO) \
-	$(MAKE) -C ../../pods/smartdisplay/ start
+#	# grafana run
+#	sudo podman run -d --name crltp-grafana -p 3000:3000 --network mgmt-crltp --restart always grafana
 
-	# smartdisplay Italia1-PuntaVagno
-	PODNAME=smartdisplay_Italia1 \
-	ETH0_NET=simint-crltp \
-	ETH0_IP=3.3.0.5 \
-	SD_name=$(SD_THREE) \
-	$(MAKE) -C ../../pods/smartdisplay/ start
+	# grafana data-sources
+	bash grafanaUpdate/updateDS.sh
 
-	# smartdisplay Italia2-Piave
-	PODNAME=smartdisplay_Italia2 \
-	ETH0_NET=simint-crltp \
-	ETH0_IP=3.3.0.6 \
-	SD_name=$(SD_FOUR) \
-	$(MAKE) -C ../../pods/smartdisplay/ start
+	# grafana dashboard
+	bash grafanaUpdate/updateDashboard.sh
 
-	# smartdisplay Italia3-Zara
-	PODNAME=smartdisplay_Italia3 \
-	ETH0_NET=simint-crltp \
-	ETH0_IP=3.3.0.7 \
-	SD_name=$(SD_FIVE) \
-	$(MAKE) -C ../../pods/smartdisplay/ start
+#	# smartdisplay Marconi1-Fiera
+#	PODNAME=smartdisplay_Marconi1 \
+#	ETH0_NET=simint-crltp \
+#	ETH0_IP=3.3.0.3 \
+#	SD_name=$(SD_ONE) \
+#	$(MAKE) -C ../../pods/smartdisplay/ start
+#
+#	# smartdisplay Marconi2-Rimessa
+#	PODNAME=smartdisplay_Marconi2 \
+#	ETH0_NET=simint-crltp \
+#	ETH0_IP=3.3.0.4 \
+#	SD_name=$(SD_TWO) \
+#	$(MAKE) -C ../../pods/smartdisplay/ start
+#
+#	# smartdisplay Italia1-PuntaVagno
+#	PODNAME=smartdisplay_Italia1 \
+#	ETH0_NET=simint-crltp \
+#	ETH0_IP=3.3.0.5 \
+#	SD_name=$(SD_THREE) \
+#	$(MAKE) -C ../../pods/smartdisplay/ start
+#
+#	# smartdisplay Italia2-Piave
+#	PODNAME=smartdisplay_Italia2 \
+#	ETH0_NET=simint-crltp \
+#	ETH0_IP=3.3.0.6 \
+#	SD_name=$(SD_FOUR) \
+#	$(MAKE) -C ../../pods/smartdisplay/ start
+#
+#	# smartdisplay Italia3-Zara
+#	PODNAME=smartdisplay_Italia3 \
+#	ETH0_NET=simint-crltp \
+#	ETH0_IP=3.3.0.7 \
+#	SD_name=$(SD_FIVE) \
+#	$(MAKE) -C ../../pods/smartdisplay/ start
 
 
 stop:
@@ -113,7 +138,9 @@ stop:
 	$(MAKE) -C ../../pods/sumo/ stop
 	PODNAME=amt \
 	$(MAKE) -C ../../pods/amt/ stop
-	PODNAME=bus \
+	PODNAME=busA1 \
+	$(MAKE) -C ../../pods/bus/ stop
+	PODNAME=busA2 \
 	$(MAKE) -C ../../pods/bus/ stop
 	PODNAME=smartdisplay_Marconi1 \
 	$(MAKE) -C ../../pods/smartdisplay/ stop
@@ -125,6 +152,13 @@ stop:
 	$(MAKE) -C ../../pods/smartdisplay/ stop
 	PODNAME=smartdisplay_Italia3 \
 	$(MAKE) -C ../../pods/smartdisplay/ stop
+# 	Prometheus
+	sudo podman stop prometheus || true
+	sudo podman rm prometheus || true
+# 	Grafana
+	sudo podman stop crltp-grafana || true
+	sudo podman rm crltp-grafana || true
+
 
 .PHONY: network-create
 network-create:

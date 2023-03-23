@@ -10,8 +10,8 @@ amt_port = 9191
 
 bus_list = []
 bus_added = set()
-url_time = "http://127.0.0.1:9090/getime"
-url_paline = "http://127.0.0.1:9090/paline"
+url_time = "http://127.0.0.1:9099/getime"
+url_paline = "http://127.0.0.1:9099/paline"
 
 
   

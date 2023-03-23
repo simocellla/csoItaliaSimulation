@@ -2,8 +2,12 @@ import requests
 import time
 import sys
 
-url_post = 'http://127.0.0.1:9393/updatebus/'
-url_clean_bus = "http://127.0.0.1:9393/busclean/"
+#url_post = 'http://127.0.0.1:9393/updatebus/'
+#url_clean_bus = "http://127.0.0.1:9393/busclean/"
+
+url_post = 'http://10.254.254.101:5000/updatebus/'
+url_clean_bus = 'http://10.254.254.101:5000/busclean/'
+
 speed = 0
 bus_name = None
 
@@ -28,16 +32,18 @@ def injection():
     lat = 0
     lon = 0
     try:
-        for i in range(0,10000):
-            todo = {"lat": lat, "lon": lon, "speed": speed}
+        for i in range(0,30):
+            todo = {"lat": lat, "lon": lon, "speed": speed,"id":bus_name}
             response = requests.post(url_post, data=todo)
+            print(todo)
             print(f"iteration",i,": ",response)
             time.sleep(0.1)
+            if(i == 29):
+                todo = {"bus": bus_name}
+                response = requests.post(url_clean_bus, data=todo)
+                print("Before exit",response.status_code)
     except:
         print("[+] Connection problem!")
-        todo = {"bus": bus_name}
-        response = requests.post(url_clean_bus, data=todo)
-        print("Before exit",response.status_code)
         sys.exit(0)
 
 
@@ -47,4 +53,4 @@ def injection():
 if __name__ == '__main__':
     __init__()
     injection()
-    time.sleep(0.1)
+    time.sleep(0.5)

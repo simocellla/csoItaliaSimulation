@@ -6,11 +6,12 @@ import json
 import math
 import requests
 from flask import Flask, request
+from prometheus_flask_exporter import PrometheusMetrics
 
 simport = os.getenv('SIM_PORT', default=8813)
 simhost = os.getenv('SIM_HOST', default='localhost')
 simlabel = os.getenv('SIM_LABEL', default='main')
-webport = os.getenv('SIM_API_PORT', default=9090)
+webport = os.getenv('SIM_API_PORT', default=9099)
 delay = os.getenv('DELAY', default=100)
 
 traci.init(port=simport, host=simhost, label=simlabel)
@@ -19,6 +20,7 @@ conn = traci.getConnection(simlabel)
 lock = threading.Lock()
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
 
 
 # Global Vars:
@@ -532,7 +534,7 @@ def add_flow(bus_id):
 '''
 @app.route("/executeinjection/<bus_id>", methods=['POST'])
 def injection(bus_id):
-    os.system('python3 injection_speed.py 31 -10')
+    os.system('python3 injection_speed.py 31 -1')
     return "Attack Done!"
 
 
