@@ -1,0 +1,10 @@
+from grafana/grafana
+RUN /bin/bash -c 'grafana-cli plugins install aidanmountford-html-panel'
+RUN /bin/bash -c 'grafana-cli plugins install cloudspout-button-panel'
+RUN /bin/bash -c 'grafana-cli plugins install gapit-htmlgraphics-panel'
+RUN /bin/bash -c 'grafana-cli plugins install grafana-simple-json-datasource'
+RUN /bin/bash -c 'grafana-cli plugins install marcusolsson-dynamictext-panel'
+RUN /bin/bash -c 'grafana-cli plugins install marcusolsson-json-datasource'
+RUN /bin/bash -c 'grafana-cli plugins install nagasudhirpulla-api-datasource'
+RUN /bin/bash -c 'grafana-cli plugins install paytm-kapacitor-datasource'
+RUN /bin/bash -c 'grafana-cli plugins install ryantxu-ajax-panel'

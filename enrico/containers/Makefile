@@ -44,7 +44,13 @@ prometheus:
 .PHONY: grafana
 grafana:
 	sudo setenforce 0 || true
-	sudo podman run -d --name crltp-grafana -p 3000:3000 --network mgmt-crltp --restart always grafana
+	sudo podman run -d --name crltp-grafana -p 3000:3000 --network mgmt-crltp -e "GF_INSTALL_PLUGINS=aidanmountford-html-panel,cloudspout-button-panel,gapit-htmlgraphics-panel,grafana-simple-json-datasource,marcusolsson-json-datasource,simpod-json-datasource" --restart always grafana
+#	sudo podman run \
+#	-d \
+#	-p 3000:3000 \
+#	--network mgmt-crltp \
+#	-e "GF_INSTALL_PLUGINS=aidanmountford-html-panel,cloudspout-button-panel,gapit-htmlgraphics-panel,grafana-simple-json-datasource,marcusolsson-json-datasource,simpod-json-datasource" \
+#	grafana
 
 #.PHONY: grafana
 #	sudo setenforce 0 || true

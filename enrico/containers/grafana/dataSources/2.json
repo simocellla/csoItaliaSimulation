@@ -1,0 +1,17 @@
+{
+    "id": 1,
+    "uid": "61sMA8AVk",
+    "orgId": 1,
+    "name": "[Backend]",
+    "type": "marcusolsson-json-datasource",
+    "typeName": "JSON API",
+    "typeLogoUrl": "public/plugins/marcusolsson-json-datasource/img/logo.svg",
+    "access": "proxy",
+    "url": "http://10.254.254.100:9090/",
+    "user": "",
+    "database": "",
+    "basicAuth": false,
+    "isDefault": false,
+    "jsonData": {},
+    "readOnly": false
+}

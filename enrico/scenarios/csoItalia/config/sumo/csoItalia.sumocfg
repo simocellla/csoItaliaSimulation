@@ -7,7 +7,7 @@
 
  <input>
         <net-file value="csoItalia.net.xml"/>
-        <route-files value="csoItalia.rou.xml"/>
+        <route-files value="csoItalia.rouu.xml"/>
         <additional-files value="csoItalia.xml"/>
     </input>
 </configuration>

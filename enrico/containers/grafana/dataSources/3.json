@@ -1,0 +1,17 @@
+{
+    "id": 2,
+    "uid": "f1It0g-4z",
+    "orgId": 1,
+    "name": "[BackendLocal] Test",
+    "type": "marcusolsson-json-datasource",
+    "typeName": "JSON API",
+    "typeLogoUrl": "public/plugins/marcusolsson-json-datasource/img/logo.svg",
+    "access": "proxy",
+    "url": "http://127.0.0.1:9090/",
+    "user": "",
+    "database": "",
+    "basicAuth": false,
+    "isDefault": false,
+    "jsonData": {},
+    "readOnly": false
+}

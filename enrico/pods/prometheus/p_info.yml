@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['127.0.0.1:9090']
+  - job_name: 'crltp-simbackend'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['10.254.254.100:9090']
+  - job_name: 'crltp-simyellow'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['10.254.254.101:5000']

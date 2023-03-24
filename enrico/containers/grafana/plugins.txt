@@ -1,0 +1,10 @@
+aidanmountford-html-panel
+cloudspout-button-panel 
+gapit-htmlgraphics-panel
+grafana-simple-json-datasource
+marcusolsson-dynamictext-panel
+marcusolsson-json-datasource
+nagasudhirpulla-api-datasource
+paytm-kapacitor-datasource
+ryantxu-ajax-panel 
+simpod-json-datasource

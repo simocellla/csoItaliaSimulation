@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-10-27 20:54:45 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="DEFAULT_VEHTYPE" vClass="bus" color="128,0,0"/>
+    <vType id="t_2" vClass="passenger" color="224,224,24"/>
+    <vType id="t_1"/>
+    <vType id="t_0"/>
+    <vType id="f_1"/>
+    <!-- Vehicles, persons and containers (sorted by depart) -->
+    <!--BUS Close circle -->
+    <!--
+    <trip id="t_0" depart="0.00" from="36843435#0" to="18459823#2" via="810218391#1 751968798#6 751968798#11 22890755#1 42136019#2 42136019#3 18114190#2 18114068#2 554478501#1 53836937"/>
+
+    <flow id="t_1" begin="0.00" line="bus" end="3600.00" from="36843435#0" to="18459823#2" via="810218391#1 751968798#6 751968798#11 22890755#1 42136019#2 42136019#3 18114190#2 18114068#2 554478501#1 53836937" vehsPerHour="15.00"/>
+    
+    <flow id="f_1" type="t_2" begin="0.00" color="224,224,24" from="751968800#8" to="156620187" via="58774924#9 554478501#1 53836937" end="180.00" vehsPerHour="180.00"/>
+    <trip id="t_2" depart="0.00" from="36843435#0" to="22890755#5" via="810218391#1 751968798#11"/>
+    -->
+    <route id="busRoute" edges="36843435#1 18459823#2 5793098#0 5793098#1 810218391#0 810218391#1 566784919#0 751968798#0 751968798#1 751968798#2 751968798#3 751968798#4 751968798#5 751968798#6 751968798#8 751968798#9 751968798#11 751968798#12 22890755#1 42136019#1 42136019#2 42136019#3 18114190#1 18114190#2 18114190#3 18114190#5 18114190#6 555004050#0 555004050#1 555004050#2 18114068#0 18114068#1 18114068#2 18114068#4 521567461 201690898 551037910#0 551037910#1 551040363 555280304#0 555280304#1 79213579#0 79213579#1 -18113262 -782184072#1 13857333 105016363#0 105016363#1 58774924#12 58774924#15 554478501#1 566784918 5243523#0 5243523#2 53836937 550243739#0 550243739#1 18459823#0 1025248679">
+        <stop busStop="Marconi1-Fiera" duration="20"/>
+        <stop busStop="Marconi2-Rimessa" duration="20"/>
+        <stop busStop="Italia1-PuntaVagno" duration="20"/>
+        <stop busStop="Italia2-Piave" duration="20"/>
+        <stop busStop="Italia3-Zara" duration="20"/>
+    </route>
+
+    <personFlow id="people_1" begin="0.00" color="blue" end="3600.00" personsPerHour="120.00">
+        <walk from="5793098#1" busStop="Marconi1-Fiera" />
+        <ride to="751968798#12" lines="ANY"/>
+        <walk to="751968798#12"/>
+    </personFlow>
+    <!--
+    <flow id="bus_0" type="DEFAULT_VEHTYPE" begin="0.00" line="busRoute" end="3600.00" from="36843435#1" to="554478501#1" vehsPerHour="10.00">
+    </flow>
+    -->
+</routes>

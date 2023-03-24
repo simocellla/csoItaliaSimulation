@@ -1,0 +1,17 @@
+{
+    "id": 6,
+    "uid": "L4Ds9zB4k",
+    "orgId": 1,
+    "name": "[Amt Exposed API]",
+    "type": "marcusolsson-json-datasource",
+    "typeName": "JSON API",
+    "typeLogoUrl": "public/plugins/marcusolsson-json-datasource/img/logo.svg",
+    "access": "proxy",
+    "url": "http://10.254.254.101:5000",
+    "user": "",
+    "database": "",
+    "basicAuth": false,
+    "isDefault": false,
+    "jsonData": {},
+    "readOnly": false
+}

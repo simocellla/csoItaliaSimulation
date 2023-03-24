@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $PODNAME
+  labels:
+    testlabel: test
+spec:
+  containers:
+    - name: prometheus
+      image: crltp-prometheus
+      ports:
+        - containerPort: 9090
