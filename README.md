@@ -34,7 +34,7 @@ The work was developed through virtualization logic in containers, which can be 
 
 After installing the required applications, simply move to the containers directory, and with administrator privileges launch the command 
 ```console
-root@machine:/home/machine/Desktop/csoItaliaSimulation/NAME/containers# make
+root@machine:/home/machine/Desktop/csoItaliaSimulation/containerizedEnvironment/containers# make
 ```
 with the *make* command, the Makefile will take care of creating all the containers required for the simula
 Similarly, one must point to the scenario/csoItalia directory in order to start the simulation. 
