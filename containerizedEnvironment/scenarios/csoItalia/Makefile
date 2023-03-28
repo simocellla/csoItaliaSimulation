@@ -97,40 +97,40 @@ start: network-create
 	# grafana dashboard
 	bash grafanaUpdate/updateDashboard.sh
 
-#	# smartdisplay Marconi1-Fiera
-#	PODNAME=smartdisplay_Marconi1 \
-#	ETH0_NET=simint-crltp \
-#	ETH0_IP=3.3.0.3 \
-#	SD_name=$(SD_ONE) \
-#	$(MAKE) -C ../../pods/smartdisplay/ start
-#
-#	# smartdisplay Marconi2-Rimessa
-#	PODNAME=smartdisplay_Marconi2 \
-#	ETH0_NET=simint-crltp \
-#	ETH0_IP=3.3.0.4 \
-#	SD_name=$(SD_TWO) \
-#	$(MAKE) -C ../../pods/smartdisplay/ start
-#
-#	# smartdisplay Italia1-PuntaVagno
-#	PODNAME=smartdisplay_Italia1 \
-#	ETH0_NET=simint-crltp \
-#	ETH0_IP=3.3.0.5 \
-#	SD_name=$(SD_THREE) \
-#	$(MAKE) -C ../../pods/smartdisplay/ start
-#
-#	# smartdisplay Italia2-Piave
-#	PODNAME=smartdisplay_Italia2 \
-#	ETH0_NET=simint-crltp \
-#	ETH0_IP=3.3.0.6 \
-#	SD_name=$(SD_FOUR) \
-#	$(MAKE) -C ../../pods/smartdisplay/ start
-#
-#	# smartdisplay Italia3-Zara
-#	PODNAME=smartdisplay_Italia3 \
-#	ETH0_NET=simint-crltp \
-#	ETH0_IP=3.3.0.7 \
-#	SD_name=$(SD_FIVE) \
-#	$(MAKE) -C ../../pods/smartdisplay/ start
+	# smartdisplay Marconi1-Fiera
+	PODNAME=smartdisplay_Marconi1 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.3 \
+	SD_name=$(SD_ONE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Marconi2-Rimessa
+	PODNAME=smartdisplay_Marconi2 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.4 \
+	SD_name=$(SD_TWO) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia1-PuntaVagno
+	PODNAME=smartdisplay_Italia1 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.5 \
+	SD_name=$(SD_THREE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia2-Piave
+	PODNAME=smartdisplay_Italia2 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.6 \
+	SD_name=$(SD_FOUR) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
+
+	# smartdisplay Italia3-Zara
+	PODNAME=smartdisplay_Italia3 \
+	ETH0_NET=simint-crltp \
+	ETH0_IP=3.3.0.7 \
+	SD_name=$(SD_FIVE) \
+	$(MAKE) -C ../../pods/smartdisplay/ start
 
 
 stop:
