@@ -36,8 +36,13 @@ After installing the required applications, simply move to the containers direct
 ```console
 root@machine:/home/machine/Desktop/csoItaliaSimulation/containerizedEnvironment/containers# make
 ```
-with the *make* command, the Makefile will take care of creating all the containers required for the simula
-Similarly, one must point to the scenario/csoItalia directory in order to start the simulation. 
+with the *make* command, the Makefile will take care of creating all the containers required for the simulation.
+
+Similarly, the second one must point to the 
+```console 
+scenario/csoItalia 
+```
+directory in order to, after performing the *make* command, start the simulation. 
 
 Once the environment has been created, it will be possible to interact with it, as shown next.
 
